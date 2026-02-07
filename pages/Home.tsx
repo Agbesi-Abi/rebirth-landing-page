@@ -101,7 +101,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                     viewBox="0 0 100 100" 
                     className="absolute -top-8 -right-6 w-14 h-14 md:-top-16 md:-right-12 md:w-40 md:h-40 text-rebirth-green/20 fill-current"
                   >
-                    <path d="M50 0L55.8 35.8L90 25L65.8 50L90 75L55.8 64.2L50 100L44.2 64.2L10 75L34.2 50L10 25L44.2 35.8L50 0Z" />
+                    {/* <path d="M50 0L55.8 35.8L90 25L65.8 50L90 75L55.8 64.2L50 100L44.2 64.2L10 75L34.2 50L10 25L44.2 35.8L50 0Z" /> */}
                   </motion.svg>
                 </span>
                 <br />
