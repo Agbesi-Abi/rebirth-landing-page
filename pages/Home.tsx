@@ -22,7 +22,16 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       opacity: 1, 
       transition: { duration: 0.8, ease: [0.6, 0.01, 0.35, 1] } 
     }
+
   };
+
+  const softFade = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.6, ease: 'easeOut' },
+  },
+};
 
   const imageReveal = {
     hidden: { scale: 1.1, opacity: 0 },
@@ -78,7 +87,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   return (
     <div className="px-6 md:px-12 lg:px-24 max-w-screen-2xl mx-auto overflow-hidden">
       {/* Hero Section */}
-      <section className="min-h-[85vh] md:min-h-screen flex flex-col justify-center pt-24 md:pt-32 pb-24 md:pb-40">
+      <section className="  flex flex-col justify-center pt-24 md:pt-32 pb-24 md:pb-40">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-16 lg:gap-24 items-start">
           <motion.div 
             className="md:col-span-8 order-2 md:order-1"
@@ -89,7 +98,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             <div className="overflow-visible relative">
               <motion.h1 
                 variants={itemVariants}
-                className="text-6xl sm:text-7xl md:text-[8.5vw] lg:text-[8vw] font-bold leading-[0.85] tracking-tighter"
+                className="text-6xl sm:text-7xl md:text-[8.5vw] lg:text-[4vw] font-bold leading-[0.85] tracking-tighter"
               >
                 Redefining <br />
                 <span className="relative inline-block">
@@ -101,7 +110,6 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                     viewBox="0 0 100 100" 
                     className="absolute -top-8 -right-6 w-14 h-14 md:-top-16 md:-right-12 md:w-40 md:h-40 text-rebirth-green/20 fill-current"
                   >
-                    <path d="M50 0L55.8 35.8L90 25L65.8 50L90 75L55.8 64.2L50 100L44.2 64.2L10 75L34.2 50L10 25L44.2 35.8L50 0Z" />
                   </motion.svg>
                 </span>
                 <br />
@@ -267,40 +275,42 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       </motion.section>
 
       {/* Review Section - Fluid Height */}
-      <motion.section 
-        className="py-48 md:py-80 bg-neutral-50 -mx-6 md:-mx-12 lg:-mx-24 px-6 md:px-12 lg:px-24"
+            <motion.section
+        className="py-48 md:py-64 bg-neutral-50 -mx-6 md:-mx-12 lg:-mx-24 px-6 md:px-12 lg:px-24"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
         variants={containerVariants}
       >
         <div className="max-w-screen-2xl mx-auto">
           <div className="mb-24 flex items-center gap-6">
-            <span className="w-12 h-[1px] bg-rebirth-green"></span>
-            <h2 className="text-[10px] uppercase tracking-ultra-widest font-bold text-rebirth-green">Voices of the Network</h2>
+            <span className="w-12 h-px bg-rebirth-green" />
+            <span className="text-[10px] tracking-ultra-widest uppercase font-bold text-rebirth-green">
+              Voices
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-24 items-start">
-            <motion.div className="md:col-span-8 lg:col-span-7" variants={itemVariants}>
-              <p className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-serif italic text-rebirth-black leading-[0.95] tracking-tighter mb-12">
-                "{reviews[0].quote}"
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-x-16 gap-y-32">
+            <motion.div className="md:col-span-7" variants={itemVariants}>
+              <p className="text-4xl md:text-6xl lg:text-7xl font-serif italic leading-[0.95] tracking-tighter mb-10">
+                {reviews[0].quote}
               </p>
-              <div className="flex flex-col gap-2">
-                <span className="text-xs font-bold uppercase tracking-widest text-rebirth-black">{reviews[0].author}</span>
-                <span className="text-[10px] uppercase tracking-widest text-neutral-400">{reviews[0].role}</span>
-              </div>
+              <span className="block text-xs font-bold uppercase tracking-widest">
+                {reviews[0].author}
+              </span>
+              <span className="block text-[10px] uppercase tracking-widest text-neutral-400">
+                {reviews[0].role}
+              </span>
             </motion.div>
 
-            <div className="md:col-span-4 lg:col-span-3 lg:col-start-10 space-y-32 md:mt-24">
-              {reviews.slice(1).map((review, idx) => (
-                <motion.div key={idx} variants={itemVariants} className="group">
-                  <p className="text-xl md:text-2xl font-light text-neutral-600 leading-snug mb-8">
-                    "{review.quote}"
+            <div className="md:col-span-4 md:col-start-9 space-y-24 md:pt-32">
+              {reviews.slice(1).map((r, i) => (
+                <motion.div key={i} variants={softFade}>
+                  <p className="text-xl font-light text-neutral-600 mb-4">
+                    {r.quote}
                   </p>
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-rebirth-green">{review.author}</span>
-                    <span className="text-[9px] uppercase tracking-widest text-neutral-400">{review.role}</span>
-                  </div>
+                  <span className="text-[10px] uppercase tracking-widest text-rebirth-green font-bold">
+                    {r.author}
+                  </span>
                 </motion.div>
               ))}
             </div>
