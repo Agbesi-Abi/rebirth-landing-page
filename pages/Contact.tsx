@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Contact: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({ name: '', company: '', email: '', message: '', services: [] as string[] });
   const [activeStep, setActiveStep] = useState(0);
 
+  const submittedRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLImageElement>(null);
+  const formSectionsRef = useRef<HTMLDivElement[]>([]);
+  const mobileSummaryRef = useRef<HTMLDivElement>(null);
+
   const services = [
-    'Creative Studio Mgmt', 'Influencer Strategy', 'Brand Campaigns', 
+    'Creative Studio Mgmt', 'Influencer Strategy', 'Brand Campaigns',
     'Events & Activation', 'Digital Community', 'Workshops'
   ];
 
@@ -26,7 +34,7 @@ const Contact: React.FC = () => {
   const toggleService = (service: string) => {
     setFormData(prev => ({
       ...prev,
-      services: prev.services.includes(service) 
+      services: prev.services.includes(service)
         ? prev.services.filter(s => s !== service)
         : [...prev.services, service]
     }));
@@ -36,37 +44,67 @@ const Contact: React.FC = () => {
 
   const inputClasses = "bg-transparent border-b border-white/20 text-rebirth-green placeholder:text-white/10 focus:outline-none focus:border-rebirth-green transition-all duration-700 py-2 w-full font-sans font-medium tracking-tight";
 
+  useEffect(() => {
+    if (submitted && submittedRef.current) {
+      gsap.fromTo(submittedRef.current, { opacity: 0 }, { opacity: 1, duration: 1 });
+      const blackDiv = submittedRef.current.querySelector('.black-bg');
+      if (blackDiv) {
+        gsap.fromTo(blackDiv, { height: 0 }, { height: "100%", duration: 1.5, ease: "power3.out" });
+      }
+    }
+  }, [submitted]);
+
+  useEffect(() => {
+    formSectionsRef.current.forEach((section, idx) => {
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top 80%",
+        onEnter: () => setActiveStep(idx),
+        once: true
+      });
+    });
+
+    // Background transition
+    const bgTl = gsap.timeline();
+    if (bgRef.current) {
+      bgTl.fromTo(bgRef.current, { opacity: 0 }, { opacity: 1, duration: 1.5 });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (formData.name && mobileSummaryRef.current) {
+      gsap.fromTo(mobileSummaryRef.current, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5 });
+    } else if (!formData.name && mobileSummaryRef.current) {
+      gsap.to(mobileSummaryRef.current, { opacity: 0, y: 50, duration: 0.5 });
+    }
+  }, [formData.name]);
+
   if (submitted) {
     return (
-      <motion.div 
+      <div
+        ref={submittedRef}
         className="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
       >
-        <motion.div 
-          className="absolute inset-0 bg-black z-0 flex flex-col justify-between"
-          initial={{ height: 0 }}
-          animate={{ height: "100%" }}
-          transition={{ duration: 1.5, ease: [0.8, 0, 0.2, 1] }}
+        <div
+          className="black-bg absolute inset-0 bg-black z-0 flex flex-col justify-between"
         >
           <div className="h-12 md:h-24 bg-white w-full"></div>
           <div className="h-12 md:h-24 bg-white w-full"></div>
-        </motion.div>
+        </div>
 
         <div className="relative z-10 text-center px-6">
           <p className="text-[10px] uppercase tracking-ultra-widest text-rebirth-green font-bold mb-6">Archive Entry Recorded</p>
           <h1 className="text-white text-5xl md:text-[10vw] font-bold tracking-tighter leading-none mb-12">
             See you <span className="font-serif italic font-light text-rebirth-green">Soon.</span>
           </h1>
-          <button 
+          <button
             onClick={() => setSubmitted(false)}
             className="text-white text-[10px] uppercase tracking-ultra-widest border border-white/20 px-10 py-4 hover:bg-white hover:text-black transition-all"
           >
             Return
           </button>
         </div>
-      </motion.div>
+      </div>
     );
   }
 
@@ -74,17 +112,11 @@ const Contact: React.FC = () => {
     <div className="relative min-h-screen bg-black overflow-hidden selection:bg-rebirth-green selection:text-white">
       {/* Dynamic Background */}
       <div className="fixed inset-0 z-0">
-        <AnimatePresence mode="wait">
-          <motion.img 
-            key={currentBg}
-            src={currentBg}
-            className="w-full h-full object-cover grayscale brightness-[0.2]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.5 }}
-          />
-        </AnimatePresence>
+        <img
+          ref={bgRef}
+          src={currentBg}
+          className="w-full h-full object-cover grayscale brightness-[0.2]"
+        />
       </div>
 
       {/* Side Status Bar - Desktop only */}
@@ -103,11 +135,11 @@ const Contact: React.FC = () => {
       {/* Form Content */}
       <main className="relative z-10 px-6 md:px-12 lg:px-24 pt-32 pb-48">
         <form onSubmit={handleSubmit} className="max-w-5xl mx-auto space-y-48 md:space-y-64">
-          
-          <motion.div onViewportEnter={() => setActiveStep(0)}>
+
+          <div ref={(el) => { if (el) formSectionsRef.current[0] = el; }}>
             <h2 className="text-white leading-[1.1] tracking-tighter">
               <span className="font-serif italic text-3xl md:text-5xl block mb-6 opacity-60">I am</span>
-              <input 
+              <input
                 required
                 type="text"
                 placeholder="[Name]"
@@ -116,7 +148,7 @@ const Contact: React.FC = () => {
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
               />
               <span className="font-serif italic text-2xl md:text-4xl block mt-12 mb-6 opacity-60">representing</span>
-              <input 
+              <input
                 type="text"
                 placeholder="[Entity]"
                 className={`${inputClasses} text-3xl md:text-5xl lg:text-[5vw]`}
@@ -124,12 +156,12 @@ const Contact: React.FC = () => {
                 onChange={(e) => setFormData({...formData, company: e.target.value})}
               />
             </h2>
-          </motion.div>
+          </div>
 
-          <motion.div onViewportEnter={() => setActiveStep(1)}>
+          <div ref={(el) => { if (el) formSectionsRef.current[1] = el; }}>
             <h2 className="text-white leading-[1.1] tracking-tighter">
               <span className="font-serif italic text-3xl md:text-5xl block mb-6 opacity-60">Reach me at</span>
-              <input 
+              <input
                 required
                 type="email"
                 placeholder="[Email Address]"
@@ -138,9 +170,9 @@ const Contact: React.FC = () => {
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
               />
             </h2>
-          </motion.div>
+          </div>
 
-          <motion.div onViewportEnter={() => setActiveStep(2)} className="space-y-12">
+          <div ref={(el) => { if (el) formSectionsRef.current[2] = el; }} className="space-y-12">
             <h2 className="text-white tracking-tighter">
               <span className="font-serif italic text-3xl md:text-5xl block opacity-60">Seeking expertise in</span>
             </h2>
@@ -151,8 +183,8 @@ const Contact: React.FC = () => {
                   type="button"
                   onClick={() => toggleService(s)}
                   className={`px-6 py-4 text-[10px] uppercase tracking-widest font-bold border text-left transition-all ${
-                    formData.services.includes(s) 
-                      ? 'border-rebirth-green bg-rebirth-green/10 text-white' 
+                    formData.services.includes(s)
+                      ? 'border-rebirth-green bg-rebirth-green/10 text-white'
                       : 'border-white/10 text-white/40'
                   }`}
                 >
@@ -160,12 +192,12 @@ const Contact: React.FC = () => {
                 </button>
               ))}
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div onViewportEnter={() => setActiveStep(3)} className="space-y-12">
+          <div ref={(el) => { if (el) formSectionsRef.current[3] = el; }} className="space-y-12">
             <h2 className="text-white tracking-tighter">
               <span className="font-serif italic text-3xl md:text-5xl block mb-8 opacity-60">To build</span>
-              <textarea 
+              <textarea
                 required
                 rows={2}
                 placeholder="[Manifest your vision...]"
@@ -174,39 +206,35 @@ const Contact: React.FC = () => {
                 onChange={(e) => setFormData({...formData, message: e.target.value})}
               />
             </h2>
-            
+
             <div className="pt-24 flex flex-col md:flex-row items-center justify-between gap-12 border-t border-white/5">
               <div className="text-white/20 text-[9px] md:text-[10px] uppercase tracking-widest max-w-sm font-bold">
                 Inquiries are strictly confidential within the Rebirth network.
               </div>
-              <button 
+              <button
                 type="submit"
                 className="w-full md:w-auto bg-rebirth-green px-16 py-6 text-white text-[10px] uppercase tracking-[0.4em] font-bold"
               >
                 Transmit Inquire
               </button>
             </div>
-          </motion.div>
+          </div>
 
         </form>
       </main>
 
       {/* Mobile-Friendly Live Summary */}
-      <AnimatePresence>
-        {formData.name && (
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-0 left-0 right-0 z-[60] p-4 bg-black/80 backdrop-blur-xl border-t border-white/10 md:hidden"
-          >
-            <div className="flex justify-between items-center text-[8px] uppercase tracking-ultra-widest text-rebirth-green font-bold">
-              <span>LIVE DOSSIER: {formData.name}</span>
-              <span className="w-1 h-1 bg-rebirth-green animate-ping"></span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {formData.name && (
+        <div
+          ref={mobileSummaryRef}
+          className="fixed bottom-0 left-0 right-0 z-[60] p-4 bg-black/80 backdrop-blur-xl border-t border-white/10 md:hidden"
+        >
+          <div className="flex justify-between items-center text-[8px] uppercase tracking-ultra-widest text-rebirth-green font-bold">
+            <span>LIVE DOSSIER: {formData.name}</span>
+            <span className="w-1 h-1 bg-rebirth-green animate-ping"></span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

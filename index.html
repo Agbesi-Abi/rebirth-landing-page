@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Young+Serif&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Young+Serif&family=DM+Serif+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
@@ -20,6 +20,7 @@
             fontFamily: {
               sans: ['Inter', 'sans-serif'],
               serif: ['Young Serif', 'serif'],
+              'dm-serif': ['DM Serif Display', 'serif'],
             },
             letterSpacing: {
               'ultra-widest': '0.5em',
@@ -49,11 +50,7 @@
       html {
         scroll-behavior: smooth;
       }
-      @media (pointer: fine) {
-        html {
-          cursor: none;
-        }
-      }
+
       body {
         background-color: #ffffff;
         color: #111111;
@@ -98,7 +95,6 @@
     "react": "https://esm.sh/react@19.0.0",
     "react-dom": "https://esm.sh/react-dom@19.0.0",
     "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
-    "framer-motion": "https://esm.sh/framer-motion@11.11.11?external=react,react-dom",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/"
   }

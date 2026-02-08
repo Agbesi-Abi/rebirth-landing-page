@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
 import { Page } from '../types';
 
 interface NavbarProps {
@@ -23,19 +23,28 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
     setIsOpen(false);
   };
 
-  const menuVariants = {
-    closed: { y: '-100%', transition: { duration: 0.8, ease: [0.6, 0.01, 0.35, 1] } },
-    open: { y: 0, transition: { duration: 0.8, ease: [0.6, 0.01, 0.35, 1] } }
-  };
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuLinksRef = useRef<HTMLButtonElement[]>([]);
+  const menuCtaRef = useRef<HTMLButtonElement>(null);
+  const menuFooterRef = useRef<HTMLDivElement>(null);
+  const toggleSpansRef = useRef<HTMLSpanElement[]>([]);
 
-  const linkVariants = {
-    closed: { y: 100, opacity: 0 },
-    open: (i: number) => ({
-      y: 0,
-      opacity: 1,
-      transition: { delay: 0.4 + i * 0.1, duration: 0.8, ease: [0.6, 0.01, 0.35, 1] }
-    })
-  };
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (isOpen) {
+        // Animate menu in
+        gsap.fromTo(menuRef.current, { y: '-100%' }, { y: 0, duration: 0.8, ease: 'power3.out' });
+        gsap.fromTo(menuLinksRef.current, { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, delay: 0.4, ease: 'power3.out' });
+        gsap.fromTo(menuCtaRef.current, { opacity: 0 }, { opacity: 1, duration: 0.8, delay: 1, ease: 'power3.out' });
+        gsap.fromTo(menuFooterRef.current, { opacity: 0 }, { opacity: 1, duration: 0.8, delay: 1.2, ease: 'power3.out' });
+      } else {
+        // Animate menu out
+        gsap.to(menuRef.current, { y: '-100%', duration: 0.8, ease: 'power3.out' });
+      }
+    });
+
+    return () => ctx.revert();
+  }, [isOpen]);
 
   return (
     <>
@@ -70,78 +79,68 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
         </div>
 
         {/* Mobile Toggle */}
-        <button 
+        <button
           onClick={toggleMenu}
           className="lg:hidden flex flex-col gap-1.5 p-2 z-[110]"
           aria-label="Toggle Menu"
         >
-          <motion.span 
-            animate={isOpen ? { rotate: 45, y: 7.5 } : { rotate: 0, y: 0 }}
+          <span
+            ref={(el) => { if (el) toggleSpansRef.current[0] = el; }}
             className="w-6 h-[1.5px] bg-rebirth-black block origin-center"
           />
-          <motion.span 
-            animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
+          <span
+            ref={(el) => { if (el) toggleSpansRef.current[1] = el; }}
             className="w-6 h-[1.5px] bg-rebirth-black block"
           />
-          <motion.span 
-            animate={isOpen ? { rotate: -45, y: -7.5 } : { rotate: 0, y: 0 }}
+          <span
+            ref={(el) => { if (el) toggleSpansRef.current[2] = el; }}
             className="w-6 h-[1.5px] bg-rebirth-black block origin-center"
           />
         </button>
       </nav>
 
       {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            variants={menuVariants}
-            initial="closed"
-            animate="open"
-            exit="closed"
-            className="fixed inset-0 z-[90] bg-white flex flex-col px-6 pt-32 pb-12 lg:hidden"
-          >
-            <div className="flex flex-col space-y-6">
-              <span className="text-[10px] uppercase tracking-ultra-widest text-neutral-300 font-bold mb-4">— MENU</span>
-              {navItems.map((item, i) => (
-                <div key={item.value} className="overflow-hidden">
-                  <motion.button
-                    custom={i}
-                    variants={linkVariants}
-                    onClick={() => handleNavigate(item.value)}
-                    className="text-5xl md:text-7xl font-bold tracking-tighter hover:text-rebirth-green transition-colors"
-                  >
-                    {item.label}
-                  </motion.button>
-                </div>
-              ))}
-              <motion.button
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
-                onClick={() => handleNavigate('contact')}
-                className="mt-8 text-lg font-serif italic text-rebirth-green hover:text-rebirth-black transition-colors"
-              >
-                Let's create something together →
-              </motion.button>
-            </div>
-
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2 }}
-              className="mt-auto flex justify-between items-end border-t border-neutral-100 pt-8"
+      {isOpen && (
+        <div
+          ref={menuRef}
+          className="fixed inset-0 z-[90] bg-white flex flex-col px-6 pt-32 pb-12 lg:hidden"
+        >
+          <div className="flex flex-col space-y-6">
+            <span className="text-[10px] uppercase tracking-ultra-widest text-neutral-300 font-bold mb-4">— MENU</span>
+            {navItems.map((item, i) => (
+              <div key={item.value} className="overflow-hidden">
+                <button
+                  ref={(el) => { if (el) menuLinksRef.current[i] = el; }}
+                  onClick={() => handleNavigate(item.value)}
+                  className="text-5xl md:text-7xl font-bold tracking-tighter hover:text-rebirth-green transition-colors"
+                >
+                  {item.label}
+                </button>
+              </div>
+            ))}
+            <button
+              ref={menuCtaRef}
+              onClick={() => handleNavigate('contact')}
+              className="mt-8 text-lg font-serif italic text-rebirth-green hover:text-rebirth-black transition-colors"
             >
-              <div className="flex flex-col gap-2">
-                <span className="text-[9px] uppercase tracking-ultra-widest text-neutral-400 font-bold">ACCRA</span>
-                <span className="text-[9px] uppercase tracking-ultra-widest text-neutral-400 font-bold">LONDON</span>
-              </div>
-              <div className="text-[10px] uppercase tracking-widest text-neutral-300 font-bold">
-                © 2024
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              Let's create something together →
+            </button>
+          </div>
+
+          <div
+            ref={menuFooterRef}
+            className="mt-auto flex justify-between items-end border-t border-neutral-100 pt-8"
+          >
+            <div className="flex flex-col gap-2">
+              <span className="text-[9px] uppercase tracking-ultra-widest text-neutral-400 font-bold">ACCRA</span>
+              <span className="text-[9px] uppercase tracking-ultra-widest text-neutral-400 font-bold">LONDON</span>
+            </div>
+            <div className="text-[10px] uppercase tracking-widest text-neutral-300 font-bold">
+              © 2024
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

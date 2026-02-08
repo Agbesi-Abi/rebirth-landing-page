@@ -1,6 +1,9 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Page, Project } from '../types';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface WorkProps {
   onNavigate: (page: Page) => void;
@@ -15,53 +18,70 @@ const projects: Project[] = [
 ];
 
 const Work: React.FC<WorkProps> = ({ onNavigate }) => {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15 }
-    }
-  };
 
-  const item = {
-    hidden: { opacity: 0, y: 40 },
-    show: { opacity: 1, y: 0, transition: { duration: 1, ease: [0.6, 0.01, 0.35, 1] } }
-  };
+  const headerRef = useRef<HTMLDivElement>(null);
+  const projectRefs = useRef<HTMLDivElement[]>([]);
+  const ctaRef = useRef<HTMLElement>(null);
+  const ctaButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Header animation
+      gsap.fromTo(headerRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1 });
+
+      // Project animations
+      projectRefs.current.forEach((project, idx) => {
+        ScrollTrigger.create({
+          trigger: project,
+          start: "top 80%",
+          onEnter: () => gsap.fromTo(project, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }),
+          once: true
+        });
+      });
+
+      // CTA animation
+      ScrollTrigger.create({
+        trigger: ctaRef.current,
+        start: "top 80%",
+        onEnter: () => gsap.fromTo(ctaRef.current, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1.5 }),
+        once: true
+      });
+
+      // Hover animation for CTA button
+      if (ctaButtonRef.current) {
+        ctaButtonRef.current.addEventListener('mouseenter', () => gsap.to(ctaButtonRef.current, { scale: 1.1, rotation: 5, duration: 0.3, ease: 'power3.out' }));
+        ctaButtonRef.current.addEventListener('mouseleave', () => gsap.to(ctaButtonRef.current, { scale: 1, rotation: 0, duration: 0.3, ease: 'power3.out' }));
+      }
+    });
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <div className="px-6 md:px-12 lg:px-24 max-w-screen-2xl mx-auto overflow-hidden">
       <section className="pt-32 pb-64 md:pb-80">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+        <div
+          ref={headerRef}
           className="mb-40"
         >
           <h1 className="text-7xl md:text-9xl lg:text-[10rem] font-bold tracking-tighter leading-[0.85] mb-12">
             Selected <br />Portfolios
           </h1>
           <p className="text-neutral-300 uppercase text-[10px] tracking-[0.6em] font-bold">— ARCHIVE INDEX 2024</p>
-        </motion.div>
-        
-        <motion.div 
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
-          className="space-y-64 md:space-y-96"
-        >
+        </div>
+
+        <div className="space-y-64 md:space-y-96">
           {projects.map((project, index) => (
-            <motion.div 
+            <div
               key={project.id}
-              variants={item}
+              ref={(el) => { if (el) projectRefs.current[index] = el; }}
               className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} gap-16 md:gap-32 items-start`}
             >
               <div className="w-full md:w-8/12 group relative overflow-hidden bg-neutral-50 shadow-xl">
-                <motion.img 
-                  whileHover={{ scale: 1.03 }}
-                  transition={{ duration: 1.5 }}
-                  src={project.imageUrl} 
-                  alt={project.title} 
-                  className="w-full aspect-video md:aspect-[16/9] object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-[1.2s]"
+                <img
+                  src={project.imageUrl}
+                  alt={project.title}
+                  className="w-full aspect-video md:aspect-[16/9] object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-[1.2s] group-hover:scale-105"
                 />
                 <div className="absolute top-8 right-8 text-white opacity-0 group-hover:opacity-100 transition-all duration-700 flex items-center gap-6">
                    <span className="text-[10px] uppercase tracking-[0.4em] font-bold hidden sm:block">Case Study 0{project.id}</span>
@@ -76,29 +96,28 @@ const Work: React.FC<WorkProps> = ({ onNavigate }) => {
                   Pushing boundaries of digital engagement through immersive experiences.
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </section>
 
       {/* Large Scale CTA */}
-      <section className="py-64 md:py-[50vh] flex flex-col items-center text-center border-t border-neutral-50">
-        <motion.h2 
-          whileInView={{ opacity: 1, y: 0 }}
-          initial={{ opacity: 0, y: 30 }}
-          className="text-5xl sm:text-6xl md:text-[8vw] font-bold tracking-tighter mb-24 leading-[0.8] max-w-6xl px-4"
-        >
+      <section
+        ref={ctaRef}
+        className="py-64 md:py-[50vh] flex flex-col items-center text-center border-t border-neutral-50"
+      >
+        <h2 className="text-5xl sm:text-6xl md:text-[8vw] font-bold tracking-tighter mb-24 leading-[0.8] max-w-6xl px-4">
           You like what you see? <br />
           <span className="text-rebirth-green font-serif italic font-light opacity-60">Manifest your vision.</span>
-        </motion.h2>
-        <motion.button 
-          whileHover={{ scale: 1.1, rotate: 5 }}
+        </h2>
+        <button
+          ref={ctaButtonRef}
           onClick={() => onNavigate('contact')}
           className="relative w-32 h-32 md:w-48 md:h-48 rounded-full border border-rebirth-green flex items-center justify-center overflow-hidden group"
         >
           <span className="relative z-10 text-4xl md:text-5xl group-hover:text-white transition-colors duration-700">↗</span>
           <div className="absolute inset-0 bg-rebirth-green transform scale-0 group-hover:scale-100 transition-transform duration-700 rounded-full"></div>
-        </motion.button>
+        </button>
       </section>
     </div>
   );
