@@ -74,12 +74,12 @@ const Expertise: React.FC<ExpertiseProps> = ({ onNavigate }) => {
   }, []);
 
   const expertiseMatrix = [
-    { id: '01', title: 'Digital Brand Identity', desc: 'Crafting visual languages that communicate core values with precision.' },
-    { id: '02', title: 'Content Strategy', desc: 'Narrative-driven content that cuts through noise and builds community.' },
-    { id: '03', title: 'UI / UX Design', desc: 'Seamless digital experiences designed for conversion and delight.' },
-    { id: '04', title: 'Art Direction', desc: 'Visual storytelling that elevates brand perception to premium status.' },
-    { id: '05', title: 'Motion Graphics', desc: 'Fluid animations that bring static interfaces to life.' },
-    { id: '06', title: 'Cultural Consulting', desc: 'Deep-dive research into cultural shifts to future-proof brands.' },
+    { id: '01', title: 'Creative Studio Mgmt', desc: 'Managing creative processes to deliver innovative and impactful brand solutions.', img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1600/v1770206155/_K2A6866_nowpow.jpg" },
+    { id: '02', title: 'Influencer Strategy', desc: 'Developing strategies to leverage influencers for authentic brand engagement.', img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1600/v1770206155/_K2A6867_nowpow.jpg" },
+    { id: '03', title: 'Brand Campaigns', desc: 'Designing and executing comprehensive campaigns that drive brand awareness and loyalty.', img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1600/v1770206155/_K2A6868_nowpow.jpg" },
+    { id: '04', title: 'Events & Activation', desc: 'Organizing and activating events to create memorable brand experiences.', img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1600/v1770206155/_K2A6869_nowpow.jpg" },
+    { id: '05', title: 'Digital Community', desc: 'Building and nurturing online communities to foster brand loyalty and interaction.', img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1600/v1770206155/_K2A6873_nowpow.jpg" },
+    { id: '06', title: 'Workshops', desc: 'Conducting interactive workshops to inspire creativity and strategic thinking.', img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1600/v1770206155/_K2A6884_nowpow.jpg" },
   ];
 
   const processPhases = [
@@ -91,16 +91,14 @@ const Expertise: React.FC<ExpertiseProps> = ({ onNavigate }) => {
 
   return (
     <div ref={containerRef} className="bg-white min-h-screen relative selection:bg-rebirth-green selection:text-white">
-      {/* Kota-inspired background aesthetic */}
       <div className="parallax-bg fixed inset-0 z-0 pointer-events-none opacity-[0.02]">
-        <span className="text-[60vw] font-black italic tracking-tighter absolute -left-20 top-20">RBX</span>
+        <span className="text-[50vw] font-black italic tracking-tighter absolute -left-20 top-20">RCS</span>
       </div>
 
       <div className="px-6 md:px-12 lg:px-24 relative z-10">
         {/* Header Section */}
         <section ref={heroRef} className="pt-32 pb-40 md:pt-48 md:pb-64 border-b border-neutral-100">
           <div className="hero-content max-w-7xl">
-            <span className="text-[10px] font-bold tracking-[0.5em] text-rebirth-green uppercase mb-12 block">OUR CAPABILITIES</span>
             <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tighter leading-[0.8] mb-16 italic">
               Expertise <br /> & Process.
             </h1>
@@ -110,21 +108,43 @@ const Expertise: React.FC<ExpertiseProps> = ({ onNavigate }) => {
           </div>
         </section>
 
-        {/* Expertise Matrix */}
-        <section className="py-32 md:py-48 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-b border-neutral-100">
-          {expertiseMatrix.map((item, idx) => (
-            <div 
-              key={idx} 
-              className="matrix-item p-12 md:p-16 border-b border-neutral-100 md:border-r last:border-r-0 odd:md:border-r-0 lg:odd:md:border-r lg:[&:nth-child(3n)]:border-r-0 group hover:bg-rebirth-black transition-colors duration-700"
-            >
-              <span className="text-[10px] font-bold tracking-widest text-rebirth-green mb-10 block font-mono group-hover:text-white transition-colors">[{item.id}]</span>
-              <h3 className="text-3xl font-bold tracking-tighter mb-6 group-hover:text-white transition-colors">{item.title}</h3>
-              <p className="text-neutral-400 text-sm leading-relaxed max-w-xs group-hover:text-neutral-300 transition-colors">
-                {item.desc}
-              </p>
-            </div>
-          ))}
-        </section>
+        {/* Expertise Zig-Zag Section */}
+<section className="py-32 md:py-48 space-y-32">
+  {expertiseMatrix.map((item, idx) => {
+    const isLeft = idx % 2 === 0; // Even index: image left, odd: image right
+    return (
+      <div
+        key={idx}
+        className={`matrix-item flex flex-col md:flex-row items-center gap-12 md:gap-24 ${
+          isLeft ? "" : "md:flex-row-reverse"
+        }`}
+      >
+        {/* Shaped Card / Image */}
+        <div
+          className="flex-shrink-0 w-full md:w-1/2 h-80 md:h-[400px] rounded-3xl overflow-hidden shadow-lg group"
+        >
+          <img
+            src={item.img || "https://via.placeholder.com/600x400"}
+            alt={item.title}
+            className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000"
+          />
+        </div>
+
+        {/* Text Content */}
+        <div className="md:w-1/2 flex flex-col justify-center">
+          <span className="text-[10px] font-bold tracking-widest text-rebirth-green mb-4 block font-mono">
+            [{item.id}]
+          </span>
+          <h3 className="text-3xl md:text-4xl font-bold mb-6">{item.title}</h3>
+          <p className="text-neutral-600 text-lg md:text-xl leading-relaxed max-w-xl">
+            {item.desc}
+          </p>
+        </div>
+      </div>
+    );
+  })}
+</section>
+
 
         {/* Our Process - Structured & Tech-inspired */}
         <section ref={processRef} className="py-32 md:py-48">
@@ -142,12 +162,12 @@ const Expertise: React.FC<ExpertiseProps> = ({ onNavigate }) => {
 
           <div className="space-y-0 border-t border-neutral-100">
             {processPhases.map((phase, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className="process-step group grid grid-cols-1 md:grid-cols-12 py-16 border-b border-neutral-100 items-start hover:bg-neutral-50/50 transition-all px-4"
               >
                 <div className="md:col-span-1 text-[10px] font-mono font-bold text-rebirth-green pt-2">
-                  // {phase.phase}
+                  [{phase.phase}]
                 </div>
                 <div className="md:col-span-4 mt-4 md:mt-0">
                   <h3 className="text-4xl md:text-5xl font-bold tracking-tighter uppercase">{phase.title}</h3>
@@ -188,7 +208,7 @@ const Expertise: React.FC<ExpertiseProps> = ({ onNavigate }) => {
             onClick={() => onNavigate('contact')}
             className="group flex items-center gap-10 text-[10px] uppercase tracking-[0.5em] font-bold border-b-2 border-rebirth-green pb-4 hover:gap-16 transition-all"
           >
-            Start Proposal
+            Schedule a Consultation
             <span className="text-2xl">→</span>
           </button>
         </section>

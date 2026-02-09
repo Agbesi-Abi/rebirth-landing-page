@@ -344,10 +344,10 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-48 bg-white flex flex-col items-center justify-center px-6">
+      <section className="py-12 min-h-screen bg-white flex flex-col items-center justify-center px-6">
         <div className="mb-24 text-center">
-          <span className="text-[10px] uppercase tracking-ultra-widest font-bold text-rebirth-green mb-8 block">VOICES</span>
-          <h2 className="text-5xl md:text-8xl font-bold tracking-tighter italic leading-none">The <span className="text-rebirth-green">Response.</span></h2>
+          {/* <span className="text-[10px] uppercase tracking-ultra-widest font-bold text-rebirth-green mb-8 block">VOICES</span> */}
+          <h2 className="text-3xl md:text-6xl font-bold tracking-tighter italic leading-none">The <span className="text-rebirth-green">Response.</span></h2>
         </div>
         
         <div className="relative w-[300px] h-[400px] md:w-[400px] md:h-[500px] mb-20" style={{ perspective: '1500px' }}>
@@ -369,7 +369,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
         <button 
           onClick={handleNextReview}
-          className="w-20 h-20 rounded-full border border-neutral-200 flex items-center justify-center hover:bg-rebirth-green hover:border-rebirth-green hover:text-white transition-all group"
+          className="w-20 h-12 border border-neutral-200 flex items-center justify-center hover:bg-rebirth-green hover:border-rebirth-green hover:text-white transition-all group"
         >
           <span className="text-2xl group-hover:translate-x-1 transition-transform">→</span>
         </button>
@@ -379,7 +379,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       <section className="py-64 flex flex-col items-center text-center border-t border-neutral-100">
         <h2 className="text-6xl md:text-[12vw] font-bold tracking-tighter italic leading-none mb-24">Start <span className="text-rebirth-green">Today.</span></h2>
         <button onClick={() => onNavigate('contact')} className="px-20 py-10 bg-rebirth-black text-white text-[12px] uppercase tracking-[0.5em] font-bold hover:bg-rebirth-green transition-colors">
-          Initiate Proposal
+          Join The Family
         </button>
       </section>
     </div>
