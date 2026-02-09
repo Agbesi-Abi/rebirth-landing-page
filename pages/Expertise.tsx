@@ -1,154 +1,198 @@
-import React from 'react';
+
+import React, { useLayoutEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Page } from '../types';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface ExpertiseProps {
   onNavigate: (page: Page) => void;
 }
 
 const Expertise: React.FC<ExpertiseProps> = ({ onNavigate }) => {
-  const headerRef = useRef<HTMLDivElement>(null);
-  const serviceRefs = useRef<HTMLDivElement[]>([]);
-  const ctaRef = useRef<HTMLElement>(null);
-  const ctaButtonRef = useRef<HTMLButtonElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const processRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLElement>(null);
 
-  const serviceList = [
-    {
-      title: 'Creative Studio Management',
-      description: 'High-quality production, storytelling, and creative management for brands and creators.',
-      img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130190/_K2A7094_mcqvli.jpg",
-      tags: ['Production Ops', 'Creative Vision', 'Talent Lifecycle']
-    },
-    {
-      title: 'Influencer Management',
-      description: 'Connecting creators with brands, managing collaborations, and growing authentic audiences.',
-      img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130189/_K2A7033_fcu6bd.jpg",
-      tags: ['Talent Growth', 'Brand Matching', 'Negotiation']
-    },
-    {
-      title: 'Workshop & Training',
-      description: 'Empowering individuals and teams with skills in content creation, digital marketing, and branding.',
-      img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1000/v1770130176/1Y3A5491_xfiqac.jpg",
-      tags: ['Skills Dev', 'Workshops', 'Team Building']
-    },
-    {
-      title: 'Brand Campaign & Strategy',
-      description: 'Comprehensive campaigns, workshops, and strategy sessions to elevate brand impact.',
-      img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206155/_K2A6866_nowpow.jpg",
-      tags: ['Strategy', 'Positioning', 'Execution']
-    },
-    {
-      title: 'Digital Community Building',
-      description: 'Engaging online communities through content, interaction, and growth strategies.',
-      img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206155/1Y3A6629_ozf2mz.jpg",
-      tags: ['Community', 'Engagement', 'Retention']
-    },
-    {
-      title: 'Events & Activation',
-      description: 'Planning and executing memorable events and activations to amplify brand presence.',
-      img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206155/1Y3A4697_x5zbwu.jpg",
-      tags: ['Activations', 'Experiential', 'Buzz']
-    },
-  ];
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // Header animation
-      gsap.fromTo(headerRef.current, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out' });
+      // 1. Hero Entrance
+      gsap.from(".hero-content > *", {
+        y: 40,
+        opacity: 0,
+        stagger: 0.1,
+        duration: 1,
+        ease: "power4.out",
+      });
 
-      // Service animations
-      serviceRefs.current.forEach((service, idx) => {
-        ScrollTrigger.create({
-          trigger: service,
-          start: "top 80%",
-          onEnter: () => {
-            gsap.fromTo(service.querySelectorAll('.animate-item'), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: 'power3.out' });
-            gsap.fromTo(service.querySelector('.animate-image'), { scale: 1.1, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.5, ease: 'power3.out' });
-          },
-          once: true
+      // 2. Expertise Cards (Matrix) Reveal
+      const matrixItems = gsap.utils.toArray('.matrix-item');
+      matrixItems.forEach((item: any) => {
+        gsap.from(item, {
+          y: 40,
+          opacity: 0,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: item,
+            start: "top 90%",
+            toggleActions: "play none none reverse"
+          }
         });
       });
 
-      // CTA animation
-      ScrollTrigger.create({
-        trigger: ctaRef.current,
-        start: "top 80%",
-        onEnter: () => gsap.fromTo(ctaRef.current, { opacity: 0 }, { opacity: 1, duration: 1.5 }),
-        once: true
+      // 3. Process Steps Reveal
+      const processSteps = gsap.utils.toArray('.process-step');
+      processSteps.forEach((step: any, i) => {
+        gsap.from(step, {
+          x: -30,
+          opacity: 0,
+          duration: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: step,
+            start: "top 85%",
+          }
+        });
       });
 
-      // Hover animation for CTA button
-      if (ctaButtonRef.current) {
-        ctaButtonRef.current.addEventListener('mouseenter', () => gsap.to(ctaButtonRef.current, { scale: 1.05, duration: 0.3, ease: 'power3.out' }));
-        ctaButtonRef.current.addEventListener('mouseleave', () => gsap.to(ctaButtonRef.current, { scale: 1, duration: 0.3, ease: 'power3.out' }));
-      }
-    });
+      // 4. Parallax Background Element
+      gsap.to(".parallax-bg", {
+        yPercent: -20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: containerRef.current,
+          scrub: true
+        }
+      });
+
+    }, containerRef);
 
     return () => ctx.revert();
   }, []);
 
-  return (
-    <div className="px-6 md:px-12 lg:px-24 max-w-screen-2xl mx-auto overflow-hidden">
-      <section className="pt-32 pb-48 md:pb-80">
-        <div
-          ref={headerRef}
-          className="relative"
-        >
-          <span className="text-[10px] font-bold tracking-[0.6em] text-rebirth-green uppercase mb-12 block">OUR CAPABILITIES</span>
-          <h1 className="text-7xl md:text-[10rem] lg:text-[12rem] font-bold tracking-tighter leading-[0.8] mb-32">
-            Expertise
-          </h1>
-        </div>
+  const expertiseMatrix = [
+    { id: '01', title: 'Digital Brand Identity', desc: 'Crafting visual languages that communicate core values with precision.' },
+    { id: '02', title: 'Content Strategy', desc: 'Narrative-driven content that cuts through noise and builds community.' },
+    { id: '03', title: 'UI / UX Design', desc: 'Seamless digital experiences designed for conversion and delight.' },
+    { id: '04', title: 'Art Direction', desc: 'Visual storytelling that elevates brand perception to premium status.' },
+    { id: '05', title: 'Motion Graphics', desc: 'Fluid animations that bring static interfaces to life.' },
+    { id: '06', title: 'Cultural Consulting', desc: 'Deep-dive research into cultural shifts to future-proof brands.' },
+  ];
 
-        <div className="space-y-64 md:space-y-[70vh]">
-          {serviceList.map((service, idx) => (
-            <div
-              key={idx}
-              ref={(el) => { if (el) serviceRefs.current[idx] = el; }}
-              className={`flex flex-col ${idx % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-16 lg:gap-32 items-center`}
+  const processPhases = [
+    { phase: '01', title: 'Discovery', label: 'AUDIT & RESEARCH', desc: 'We dive deep into your brand’s DNA, current cultural standing, and future aspirations to build a solid strategic foundation.' },
+    { phase: '02', title: 'Strategy', label: 'NARRATIVE DESIGN', desc: 'We define the voice, the angle, and the unique value proposition that will make your brand a cultural leader.' },
+    { phase: '03', title: 'Creation', label: 'EXECUTION', desc: 'Our studio brings the strategy to life through high-end production, design, and multi-channel content.' },
+    { phase: '04', title: 'Growth', label: 'EVALUATE & SCALE', desc: 'We monitor impact, engage the community, and refine the approach for long-term legacy building.' },
+  ];
+
+  return (
+    <div ref={containerRef} className="bg-white min-h-screen relative selection:bg-rebirth-green selection:text-white">
+      {/* Kota-inspired background aesthetic */}
+      <div className="parallax-bg fixed inset-0 z-0 pointer-events-none opacity-[0.02]">
+        <span className="text-[60vw] font-black italic tracking-tighter absolute -left-20 top-20">RBX</span>
+      </div>
+
+      <div className="px-6 md:px-12 lg:px-24 relative z-10">
+        {/* Header Section */}
+        <section ref={heroRef} className="pt-32 pb-40 md:pt-48 md:pb-64 border-b border-neutral-100">
+          <div className="hero-content max-w-7xl">
+            <span className="text-[10px] font-bold tracking-[0.5em] text-rebirth-green uppercase mb-12 block">OUR CAPABILITIES</span>
+            <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-bold tracking-tighter leading-[0.8] mb-16 italic">
+              Expertise <br /> & Process.
+            </h1>
+            <p className="text-xl md:text-3xl font-serif italic text-neutral-400 max-w-3xl leading-tight">
+              We combine high-level strategy with pixel-perfect execution to create brands that don't just exist—they lead.
+            </p>
+          </div>
+        </section>
+
+        {/* Expertise Matrix */}
+        <section className="py-32 md:py-48 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-b border-neutral-100">
+          {expertiseMatrix.map((item, idx) => (
+            <div 
+              key={idx} 
+              className="matrix-item p-12 md:p-16 border-b border-neutral-100 md:border-r last:border-r-0 odd:md:border-r-0 lg:odd:md:border-r lg:[&:nth-child(3n)]:border-r-0 group hover:bg-rebirth-black transition-colors duration-700"
             >
-              <div className="w-full lg:w-5/12">
-                <span className="animate-item text-[10px] uppercase tracking-[0.4em] text-rebirth-green font-bold mb-10 block">— SEQUENCE 0{idx + 1}</span>
-                <h2 className="animate-item text-5xl md:text-6xl lg:text-7xl font-bold mb-10 leading-[0.9] tracking-tighter">
-                  {service.title}
-                </h2>
-                <p className="animate-item text-lg md:text-xl text-neutral-500 mb-12 font-light leading-relaxed max-w-lg">
-                  {service.description}
-                </p>
-                <div className="animate-item flex flex-wrap gap-3">
-                  {service.tags.map((tag, tIdx) => (
-                    <span key={tIdx} className="text-[10px] uppercase tracking-widest border border-neutral-100 px-5 py-2 rounded-full text-neutral-400 font-medium">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="animate-image w-full lg:w-7/12">
-                 <div className="relative overflow-hidden bg-rebirth-grey aspect-video lg:aspect-[4/3] shadow-2xl">
-                    <img src={service.img} className="w-full h-full object-cover grayscale brightness-95" alt={service.title} />
-                 </div>
-              </div>
+              <span className="text-[10px] font-bold tracking-widest text-rebirth-green mb-10 block font-mono group-hover:text-white transition-colors">[{item.id}]</span>
+              <h3 className="text-3xl font-bold tracking-tighter mb-6 group-hover:text-white transition-colors">{item.title}</h3>
+              <p className="text-neutral-400 text-sm leading-relaxed max-w-xs group-hover:text-neutral-300 transition-colors">
+                {item.desc}
+              </p>
             </div>
           ))}
-        </div>
-      </section>
+        </section>
 
-      {/* Footer CTA - High Isolation */}
-      <section
-        ref={ctaRef}
-        className="py-64 md:py-96 flex flex-col items-center justify-center border-t border-neutral-50 text-center"
-      >
-        <h2 className="text-4xl md:text-7xl font-serif italic mb-20 leading-tight max-w-3xl px-4 tracking-tighter">
-          Interested in elevating your cultural footprint?
-        </h2>
-        <button
-          ref={ctaButtonRef}
-          onClick={() => onNavigate('contact')}
-          className="group relative overflow-hidden bg-rebirth-green px-12 py-6 md:px-20 md:py-8"
-        >
-          <span className="relative z-10 text-white text-[11px] uppercase tracking-[0.5em] font-bold">Initiate Protocol</span>
-          <div className="absolute inset-0 bg-rebirth-black transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700 ease-[0.6, 0.01, 0.35, 1]"></div>
-        </button>
-      </section>
+        {/* Our Process - Structured & Tech-inspired */}
+        <section ref={processRef} className="py-32 md:py-48">
+          <div className="flex flex-col lg:flex-row justify-between items-start mb-32 gap-12">
+            <div className="max-w-xl">
+              <span className="text-[10px] font-bold tracking-[0.5em] text-rebirth-green uppercase mb-8 block">HOW WE WORK</span>
+              <h2 className="text-5xl md:text-7xl font-bold tracking-tighter leading-none italic mb-10">The <span className="text-rebirth-green">Rebirth</span> Protocol.</h2>
+            </div>
+            <div className="pt-4">
+              <p className="text-neutral-400 max-w-sm text-sm uppercase tracking-widest leading-loose font-bold">
+                A rigid framework for liquid creativity. We believe that structure allows for the boldest expression.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-0 border-t border-neutral-100">
+            {processPhases.map((phase, idx) => (
+              <div 
+                key={idx} 
+                className="process-step group grid grid-cols-1 md:grid-cols-12 py-16 border-b border-neutral-100 items-start hover:bg-neutral-50/50 transition-all px-4"
+              >
+                <div className="md:col-span-1 text-[10px] font-mono font-bold text-rebirth-green pt-2">
+                  // {phase.phase}
+                </div>
+                <div className="md:col-span-4 mt-4 md:mt-0">
+                  <h3 className="text-4xl md:text-5xl font-bold tracking-tighter uppercase">{phase.title}</h3>
+                  <span className="text-[9px] font-black tracking-widest text-neutral-300 block mt-4 group-hover:text-rebirth-green transition-colors">{phase.label}</span>
+                </div>
+                <div className="md:col-span-6 md:col-start-7 mt-8 md:mt-0">
+                  <p className="text-lg text-neutral-400 font-light leading-relaxed max-w-lg">
+                    {phase.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Philosophy Callout */}
+        <section className="py-48 bg-rebirth-black -mx-6 md:-mx-12 lg:-mx-24 px-6 md:px-12 lg:px-24 flex flex-col items-center text-center">
+           <div className="max-w-5xl">
+              <h2 className="text-4xl md:text-7xl lg:text-8xl font-serif italic text-white leading-[0.95] tracking-tighter mb-16">
+                "We don't build assets; we nurture <span className="text-rebirth-green">ecosystems</span> where brands flourish."
+              </h2>
+              <button 
+                onClick={() => onNavigate('contact')}
+                className="group relative inline-flex items-center justify-center bg-white px-12 py-6 overflow-hidden"
+              >
+                <span className="relative z-10 text-black text-[10px] uppercase tracking-[0.6em] font-bold">Initiate Project</span>
+                <div className="absolute inset-0 bg-rebirth-green transform -translate-x-full group-hover:translate-x-0 transition-transform duration-700"></div>
+              </button>
+           </div>
+        </section>
+
+        {/* Footer CTA */}
+        <section ref={footerRef} className="py-64 md:py-96 flex flex-col items-center justify-center text-center">
+          <h2 className="text-4xl md:text-8xl font-bold italic mb-20 leading-tight tracking-tighter">
+            Elevate your <br /><span className="text-rebirth-green">cultural footprint.</span>
+          </h2>
+          <button 
+            onClick={() => onNavigate('contact')}
+            className="group flex items-center gap-10 text-[10px] uppercase tracking-[0.5em] font-bold border-b-2 border-rebirth-green pb-4 hover:gap-16 transition-all"
+          >
+            Start Proposal
+            <span className="text-2xl">→</span>
+          </button>
+        </section>
+      </div>
     </div>
   );
 };

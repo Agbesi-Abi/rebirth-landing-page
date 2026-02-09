@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import gsap from 'gsap';
+
+import React, { useState, useLayoutEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 import { Page } from '../types';
 
 interface NavbarProps {
@@ -9,6 +10,9 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuTl = useRef<gsap.core.Timeline | null>(null);
+
   const navItems: { label: string; value: Page }[] = [
     { label: 'Work', value: 'work' },
     { label: 'Project', value: 'project' },
@@ -16,35 +20,29 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
     { label: 'Contact', value: 'contact' },
   ];
 
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      menuTl.current = gsap.timeline({ paused: true })
+        .to(menuRef.current, { y: 0, duration: 0.8, ease: "expo.inOut" })
+        .from(".mobile-nav-item", { y: 100, opacity: 0, stagger: 0.05, duration: 0.8, ease: "power4.out" }, "-=0.4");
+    }, menuRef);
+    return () => ctx.revert();
+  }, []);
+
+  useLayoutEffect(() => {
+    if (isOpen) {
+      menuTl.current?.play();
+    } else {
+      menuTl.current?.reverse();
+    }
+  }, [isOpen]);
+
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const handleNavigate = (page: Page) => {
     onNavigate(page);
     setIsOpen(false);
   };
-
-  const menuRef = useRef<HTMLDivElement>(null);
-  const menuLinksRef = useRef<HTMLButtonElement[]>([]);
-  const menuCtaRef = useRef<HTMLButtonElement>(null);
-  const menuFooterRef = useRef<HTMLDivElement>(null);
-  const toggleSpansRef = useRef<HTMLSpanElement[]>([]);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      if (isOpen) {
-        // Animate menu in
-        gsap.fromTo(menuRef.current, { y: '-100%' }, { y: 0, duration: 0.8, ease: 'power3.out' });
-        gsap.fromTo(menuLinksRef.current, { y: 100, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, delay: 0.4, ease: 'power3.out' });
-        gsap.fromTo(menuCtaRef.current, { opacity: 0 }, { opacity: 1, duration: 0.8, delay: 1, ease: 'power3.out' });
-        gsap.fromTo(menuFooterRef.current, { opacity: 0 }, { opacity: 1, duration: 0.8, delay: 1.2, ease: 'power3.out' });
-      } else {
-        // Animate menu out
-        gsap.to(menuRef.current, { y: '-100%', duration: 0.8, ease: 'power3.out' });
-      }
-    });
-
-    return () => ctx.revert();
-  }, [isOpen]);
 
   return (
     <>
@@ -57,7 +55,6 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
           REBIRTH STUDIO
         </button>
         
-        {/* Desktop Nav */}
         <div className="hidden lg:flex items-center space-x-12">
           {navItems.map((item) => (
             <button
@@ -78,69 +75,51 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
           </button>
         </div>
 
-        {/* Mobile Toggle */}
-        <button
+        <button 
           onClick={toggleMenu}
           className="lg:hidden flex flex-col gap-1.5 p-2 z-[110]"
           aria-label="Toggle Menu"
         >
-          <span
-            ref={(el) => { if (el) toggleSpansRef.current[0] = el; }}
-            className="w-6 h-[1.5px] bg-rebirth-black block origin-center"
-          />
-          <span
-            ref={(el) => { if (el) toggleSpansRef.current[1] = el; }}
-            className="w-6 h-[1.5px] bg-rebirth-black block"
-          />
-          <span
-            ref={(el) => { if (el) toggleSpansRef.current[2] = el; }}
-            className="w-6 h-[1.5px] bg-rebirth-black block origin-center"
-          />
+          <span className={`w-6 h-[1.5px] bg-rebirth-black block origin-center transition-transform duration-500 ${isOpen ? 'rotate-45 translate-y-[7.5px]' : ''}`} />
+          <span className={`w-6 h-[1.5px] bg-rebirth-black block transition-opacity duration-500 ${isOpen ? 'opacity-0' : ''}`} />
+          <span className={`w-6 h-[1.5px] bg-rebirth-black block origin-center transition-transform duration-500 ${isOpen ? '-rotate-45 -translate-y-[7.5px]' : ''}`} />
         </button>
       </nav>
 
-      {/* Mobile Menu Overlay */}
-      {isOpen && (
-        <div
-          ref={menuRef}
-          className="fixed inset-0 z-[90] bg-white flex flex-col px-6 pt-32 pb-12 lg:hidden"
-        >
-          <div className="flex flex-col space-y-6">
-            <span className="text-[10px] uppercase tracking-ultra-widest text-neutral-300 font-bold mb-4">— MENU</span>
-            {navItems.map((item, i) => (
-              <div key={item.value} className="overflow-hidden">
-                <button
-                  ref={(el) => { if (el) menuLinksRef.current[i] = el; }}
-                  onClick={() => handleNavigate(item.value)}
-                  className="text-5xl md:text-7xl font-bold tracking-tighter hover:text-rebirth-green transition-colors"
-                >
-                  {item.label}
-                </button>
-              </div>
-            ))}
-            <button
-              ref={menuCtaRef}
-              onClick={() => handleNavigate('contact')}
-              className="mt-8 text-lg font-serif italic text-rebirth-green hover:text-rebirth-black transition-colors"
-            >
-              Let's create something together →
-            </button>
-          </div>
-
-          <div
-            ref={menuFooterRef}
-            className="mt-auto flex justify-between items-end border-t border-neutral-100 pt-8"
+      <div
+        ref={menuRef}
+        className="fixed inset-0 z-[90] bg-white flex flex-col px-6 pt-32 pb-12 lg:hidden -translate-y-full"
+      >
+        <div className="flex flex-col space-y-6">
+          <span className="text-[10px] uppercase tracking-ultra-widest text-neutral-300 font-bold mb-4">— MENU</span>
+          {navItems.map((item) => (
+            <div key={item.value} className="overflow-hidden">
+              <button
+                onClick={() => handleNavigate(item.value)}
+                className="mobile-nav-item text-5xl md:text-7xl font-bold tracking-tighter hover:text-rebirth-green transition-colors text-left"
+              >
+                {item.label}
+              </button>
+            </div>
+          ))}
+          <button
+            onClick={() => handleNavigate('contact')}
+            className="mobile-nav-item mt-8 text-lg font-serif italic text-rebirth-green hover:text-rebirth-black transition-colors text-left"
           >
-            <div className="flex flex-col gap-2">
-              <span className="text-[9px] uppercase tracking-ultra-widest text-neutral-400 font-bold">ACCRA</span>
-              <span className="text-[9px] uppercase tracking-ultra-widest text-neutral-400 font-bold">LONDON</span>
-            </div>
-            <div className="text-[10px] uppercase tracking-widest text-neutral-300 font-bold">
-              © 2024
-            </div>
+            Let's create something together →
+          </button>
+        </div>
+
+        <div className="mt-auto flex justify-between items-end border-t border-neutral-100 pt-8">
+          <div className="flex flex-col gap-2">
+            <span className="text-[9px] uppercase tracking-ultra-widest text-neutral-400 font-bold">ACCRA</span>
+            <span className="text-[9px] uppercase tracking-ultra-widest text-neutral-400 font-bold">LONDON</span>
+          </div>
+          <div className="text-[10px] uppercase tracking-widest text-neutral-300 font-bold">
+            © 2026
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 };
