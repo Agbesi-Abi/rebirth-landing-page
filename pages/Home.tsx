@@ -166,7 +166,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onNavigateToProduct }) => {
           {/* Mobile Image: Full Width Top */}
           <div className="lg:w-5/12 mb-12 md:mb-0 lg:mt-0 md:order-2">
             <img 
-              src="/public/images/manifesto.jpeg" 
+              src="/images/manifesto.jpeg" 
               className="w-full h-auto object-cover aspect-[4/5] md:aspect-[4/5] md:rounded-lg" 
               alt="Manifesto" 
             />
