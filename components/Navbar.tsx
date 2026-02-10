@@ -14,8 +14,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
   const menuTl = useRef<gsap.core.Timeline | null>(null);
 
   const navItems: { label: string; value: Page }[] = [
-    { label: 'Project', value: 'work' },
-    // { label: 'Project', value: 'project' },
+    { label: 'Portfolio', value: 'work' },
     { label: 'Expertise', value: 'expertise' },
     { label: 'Contact', value: 'contact' },
   ];
