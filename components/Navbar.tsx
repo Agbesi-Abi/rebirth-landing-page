@@ -133,14 +133,14 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
             onClick={() => handleNavigate('contact')}
             className="mobile-nav-item mt-8 text-lg font-serif italic text-rebirth-green hover:text-rebirth-black transition-colors text-left"
           >
-            Let's create something together →
+            Join our family →
           </button>
         </div>
 
         <div className="mt-auto flex justify-between items-end border-t border-neutral-100 pt-8">
           <div className="flex flex-col gap-2">
             <span className="text-[9px] uppercase tracking-ultra-widest text-neutral-400 font-bold">ACCRA</span>
-            <span className="text-[9px] uppercase tracking-ultra-widest text-neutral-400 font-bold">LONDON</span>
+            <span className="text-[9px] uppercase tracking-ultra-widest text-neutral-400 font-bold">GHANA</span>
           </div>
           <div className="text-[10px] uppercase tracking-widest text-neutral-300 font-bold">
             © 2026

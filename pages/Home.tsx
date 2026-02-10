@@ -180,50 +180,42 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
   return (
     <div className="max-w-screen-2xl mx-auto bg-white">
-      {/* Hero Section */}
-      <section ref={heroRef} className="h-screen flex flex-col justify-between px-6 md:px-12 lg:px-24 border-b border-neutral-100 overflow-hidden relative pb-4 md:pb-6 pt-2 md:pt-12 lg:pt-16 bg-white z-0">
-        <div className="relative z-10 w-full flex-grow flex flex-col justify-center">
-          <h1 className="flex flex-col font-bold italic tracking-tighter text-rebirth-black leading-[0.82] uppercase select-none w-full">
-            <div className="hero-item text-[12vw] sm:text-[10vw] md:text-[9.5vw] text-left origin-left">Redefining</div>
-            <div className="hero-item text-[12vw] sm:text-[10vw] md:text-[9.5vw] text-right flex items-baseline justify-end origin-right">
-              <span className="inline-flex items-center justify-center bg-black border border-neutral-100 rounded-xl sm:rounded-2xl md:rounded-[2.5rem] w-12 h-12 sm:w-20 sm:h-20 md:w-36 md:h-36 mx-3 sm:mx-5 md:mx-7 shadow-sm overflow-hidden p-2 sm:p-5 md:p-7 transition-transform hover:scale-110 duration-500">
-                <img src="/images/hero.png" alt="hero-image" className="w-full h-full object-cover" />
-              </span>
-              {/* <span 
-                className="text-transparent bg-clip-text bg-cover bg-center transition-all duration-700 hover:scale-105 cursor-pointer inline-block mx-[-0.01em]"
-                style={{ 
-                  backgroundImage: "url('https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1000/v1770130175/1Y3A4626_b0jeme.jpg')",
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}
-              >D</span> */}
-              <span className="text-rebirth-green">DIGITAL</span>
-            </div>
-            <div className="hero-item text-[12vw] sm:text-[10vw] md:text-[9.5vw] md:pl-[10%] text-left origin-left">Creativity</div>
-          </h1>
-        </div>
-        
-        <div className="hero-item mt-12 md:mt-0 grid grid-cols-1 md:grid-cols-12 gap-8 items-end w-full">
-          <div className="md:col-span-5 md:col-start-8 lg:col-span-4 lg:col-start-9 flex flex-col gap-8 md:gap-6">
-            <p className="hidden sm:block text-[14px] sm:text-[15px] font-medium leading-relaxed text-neutral-500 text-left md:text-justify border-l-2 md:border-l-0 border-rebirth-green/20 pl-4 md:pl-0">
-              We transform ideas into bold stories, campaigns, and visuals that connect with youth and culture.
-            </p>
-            <div className="flex items-center justify-between md:justify-start gap-6">
-              <button 
-                onClick={() => onNavigate('expertise')}
-                className="group flex items-center gap-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.4em] border-b-2 border-rebirth-green pb-2 hover:gap-8 transition-all"
-              >
-                Expertise <span className="hidden sm:block group-hover:translate-x-1 transition-transform">→</span>
-              </button>
-              <div className="block md:hidden h-[1px] flex-grow bg-neutral-100 ml-4"></div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Subtle detail for mobile */}
-        <div className="absolute top-1/2 left-0 -translate-y-1/2 opacity-[0.03] text-[40vw] font-black italic select-none pointer-events-none z-0 hidden sm:block md:hidden">
-          RBX
-        </div>
+      {/* ================= HERO ================= */}
+      <section
+        ref={heroRef}
+        className="hero-bg min-h-screen flex flex-col justify-center px-6 md:px-12 lg:px-24"
+      >
+        {/* Desktop */}
+        <h1 className="hidden md:flex flex-col font-bold italic tracking-tighter leading-[0.85] uppercase">
+          <span className="hero-item text-[9.5vw]">Redefining</span>
+          <span className="hero-item text-[9.5vw] text-right text-rebirth-green">
+            Digital
+          </span>
+          <span className="hero-item text-[9.5vw] md:pl-[10%]">
+            Creativity
+          </span>
+        </h1>
+
+        {/* Mobile */}
+        <h1 className="md:hidden flex flex-col font-bold italic leading-tight uppercase">
+          <span className="hero-item text-[14vw]">Bold ideas.</span>
+          <span className="hero-item text-[14vw] text-rebirth-green">
+            Real culture.
+          </span>
+          <span className="hero-item text-[14vw]">Digital first.</span>
+        </h1>
+
+        <p className="hero-item mt-6 max-w-md text-neutral-500 text-sm">
+          We create culture-forward stories for brands shaping the next
+          generation.
+        </p>
+
+        <button
+          onClick={() => onNavigate("expertise")}
+          className="hero-item mt-10 w-fit uppercase text-[11px] tracking-[0.4em] font-bold border-b-2 border-rebirth-green pb-2"
+        >
+          Explore Expertise →
+        </button>
       </section>
       
 
