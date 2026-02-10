@@ -205,7 +205,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         
         <div className="hero-item mt-12 md:mt-0 grid grid-cols-1 md:grid-cols-12 gap-8 items-end w-full">
           <div className="md:col-span-5 md:col-start-8 lg:col-span-4 lg:col-start-9 flex flex-col gap-8 md:gap-6">
-            <p className="text-[14px] sm:text-[15px] font-medium leading-relaxed text-neutral-500 text-left md:text-justify border-l-2 md:border-l-0 border-rebirth-green/20 pl-4 md:pl-0">
+            <p className="hidden sm:block text-[14px] sm:text-[15px] font-medium leading-relaxed text-neutral-500 text-left md:text-justify border-l-2 md:border-l-0 border-rebirth-green/20 pl-4 md:pl-0">
               We transform ideas into bold stories, campaigns, and visuals that connect with youth and culture.
             </p>
             <div className="flex items-center justify-between md:justify-start gap-6">
@@ -213,7 +213,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                 onClick={() => onNavigate('expertise')}
                 className="group flex items-center gap-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.4em] border-b-2 border-rebirth-green pb-2 hover:gap-8 transition-all"
               >
-                Expertise <span className="group-hover:translate-x-1 transition-transform">→</span>
+                Expertise <span className="hidden sm:block group-hover:translate-x-1 transition-transform">→</span>
               </button>
               <div className="block md:hidden h-[1px] flex-grow bg-neutral-100 ml-4"></div>
             </div>

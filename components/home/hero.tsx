@@ -102,19 +102,19 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate }) => {
       />
 
       {/* Content wrapper */}
-      <div className="flex flex-col md:flex-row h-full relative z-10">
+      <div className="flex flex-col md:flex-row h-full relative z-10 items-center justify-center md:items-start md:justify-between">
         {/* Hero Text */}
-        <div className="flex-1 flex flex-col justify-between h-full">
+        <div className="flex-1 flex flex-col justify-between h-full text-center sm:text-left">
           <div className="flex flex-col h-full">
-            <span className="hero-line text-[clamp(4rem,10vw,12rem)] leading-[0.85]">
+            <span className="hero-line text-[clamp(2.5rem,8vw,12rem)] leading-[0.85]">
               Digital
             </span>
 
-            <span className="hero-line image-letter flex-grow text-[clamp(4.5rem,12vw,13rem)] leading-[0.85] md:pl-[5%] lg:pl-[8%] xl:pl-[10%] font-black bg-clip-text text-transparent relative">
+            <span className="hero-line image-letter flex-grow text-[clamp(3rem,10vw,13rem)] leading-[0.85] md:pl-[5%] lg:pl-[8%] xl:pl-[10%] font-black bg-clip-text text-transparent relative">
               Culture
             </span>
 
-            <span className="hero-line text-[clamp(4rem,10vw,12rem)] leading-[0.85] md:pl-[15%] lg:pl-[20%] xl:pl-[25%] mt-auto">
+            <span className="hero-line text-[clamp(2.5rem,8vw,12rem)] leading-[0.85] md:pl-[15%] lg:pl-[20%] xl:pl-[25%] mt-auto">
               Redefined
             </span>
           </div>
@@ -123,7 +123,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate }) => {
         {/* Side Meta */}
         <div className="md:flex-0 md:w-[280px] lg:w-[320px] xl:w-[360px] 2xl:w-[400px] mt-8 md:mt-0 md:ml-8 self-start md:self-end">
           <div className="side-meta space-y-6">
-            <p className="text-sm md:text-base lg:text-lg xl:text-xl font-medium italic leading-tight text-rebirth-black/80">
+            <p className="block sm:hidden text-sm md:text-base lg:text-lg xl:text-xl font-medium italic leading-tight text-rebirth-black/80">
+              Bold work for brands that stand out.
+            </p>
+            <p className="hidden sm:block text-sm md:text-base lg:text-lg xl:text-xl font-medium italic leading-tight text-rebirth-black/80">
               We're a creative studio and culture agency that crafts bold work for brands who{" "}
               <span className="text-rebirth-green font-bold">refuse to blend in.</span>
             </p>
