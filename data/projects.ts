@@ -32,8 +32,8 @@ export const PROJECTS: ProjectDetails[] = [
   //   ]
   // },
   {
-    id: '24-hours-with-kalyjay',
-    title: "24 Hours With Kalyjay",
+    id: 'kalys-house',
+    title: "Kaly's House",
     client: "Kalyjay / Digital Series",
     year: "2024",
     services: ["Content Production", "Talent Management", "Creative Direction"],
@@ -43,7 +43,7 @@ export const PROJECTS: ProjectDetails[] = [
       { role: "Editor", name: "Marcus Chen" },
       { role: "Creative Director", name: "David Olufemi" }
     ],
-    imageUrl: 'https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130192/_W6A7206_pino4p.jpg',
+    imageUrl: 'https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206155/1Y3A4697_x5zbwu.jpg',
     category: 'Content Production',
     description: "An immersive 24-hour documentary series capturing the authentic life of digital influencer Kalyjay. We crafted a narrative that showcased the raw energy of contemporary African youth culture, blending street photography with intimate storytelling.",
     fragments: [
@@ -66,3 +66,16 @@ export const PROJECTS: ProjectDetails[] = [
 export const getProjectById = (id: string): ProjectDetails | undefined => {
   return PROJECTS.find(project => project.id === id);
 };
+   
+
+
+// https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130190/_K2A7094_mcqvli.jpg
+// https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130189/_K2A7033_fcu6bd.jpg
+// https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1000/v1770130176/1Y3A5491_xfiqac.jpg
+// https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1000/v1770130192/_W6A7206_pino4p.jpg
+// https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206155/_K2A6866_nowpow.jpg
+// https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206155/1Y3A6629_ozf2mz.jpg
+// https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206155/1Y3A4697_x5zbwu.jpg
+// https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206176/1Y3A6944_e6qsrj.jpg
+// https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206157/_K2A6888_p8zcd7.jpg
+// https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1000/v1770130175/1Y3A5589_w5gly4.jpg

@@ -3,7 +3,7 @@ import React, { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Page, ProjectDetails } from '../types';
-import { getProjectById } from '../data/projects';
+import { getProjectById, PROJECTS } from '../data/projects';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,9 +17,11 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ onNavigate, projectId, on
   const containerRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   
-  const project = getProjectById(projectId) || getProjectById('24-hours-with-kalyjay')!;
-  const nextProjectId = projectId === '24-hours-with-kalyjay' ? '24-hours-with-kalyjay' : '24-hours-with-kalyjay';
-  const nextProject = getProjectById(nextProjectId)!;
+  const project = getProjectById(projectId) || PROJECTS[0];
+  const currentIndex = PROJECTS.findIndex(p => p.id === project.id);
+  const nextIndex = (currentIndex + 1) % PROJECTS.length;
+  const nextProjectId = PROJECTS[nextIndex].id;
+  const nextProject = PROJECTS[nextIndex];
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {

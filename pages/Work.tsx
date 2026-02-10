@@ -1,4 +1,3 @@
-5
 import React, { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -12,92 +11,104 @@ interface WorkProps {
   onNavigateToProject?: (id: string) => void;
 }
 
-const Work: React.FC<WorkProps> = ({ onNavigate, onNavigateToProject }) => {
+const Work: React.FC<WorkProps> = ({ onNavigateToProject }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const projects = PROJECTS;
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // Animate project cards on scroll
-      gsap.utils.toArray('.project-card').forEach((card: any, i) => {
-        gsap.from(card, {
-          y: 60,
+      gsap.utils.toArray<HTMLElement>('.project-row').forEach((row) => {
+        gsap.from(row, {
+          y: 80,
           opacity: 0,
           duration: 1.2,
-          ease: "expo.out",
+          ease: 'expo.out',
           scrollTrigger: {
-            trigger: card,
-            start: "top 90%",
-            toggleActions: "play none none reverse"
-          }
+            trigger: row,
+            start: 'top 85%',
+          },
         });
       });
     }, containerRef);
+
     return () => ctx.revert();
   }, []);
 
   return (
-    <div ref={containerRef} className="bg-white min-h-screen selection:bg-rebirth-green pb-32">
-      {/* Hero Section */}
-      <section className="pt-24 md:pt-48 px-6 md:px-12 lg:px-24 pb-20 md:pb-32">
-        <div className="flex flex-col gap-10 md:gap-16">
-          <div className="flex items-center gap-3">
-            <span className="w-1.5 h-1.5 bg-rebirth-green rounded-full shadow-[0_0_8px_#004D31]"></span>
-            <span className="text-[10px] font-mono tracking-widest text-neutral-400 font-bold uppercase italic font-mono">
-              // WORK_PORTFOLIO
-            </span>
-          </div>
+    <main
+      ref={containerRef}
+      className="bg-white min-h-screen selection:bg-rebirth-green pb-40"
+    >
+      {/* HERO */}
+      <section className="pt-32 md:pt-48 px-6 md:px-12 lg:px-24 pb-24">
+        <div className="max-w-6xl">
+          <span className="block text-[10px] font-bold tracking-ultra-widest uppercase text-rebirth-green mb-8">
+            Selected Work
+          </span>
 
-          <h1 className="text-6xl sm:text-7xl md:text-[13vw] font-bold tracking-tighter leading-[0.82] italic uppercase">
-            Our Work
+          <h1 className="text-[14vw] md:text-[10vw] leading-[0.85] font-bold tracking-tighter italic uppercase">
+            Portfolio
           </h1>
 
-          <p className="text-xl md:text-2xl text-neutral-600 max-w-3xl">
-            A curated collection of projects that push creative boundaries and deliver exceptional results.
+          <p className="mt-10 text-xl md:text-2xl text-neutral-600 max-w-3xl">
+            A focused body of work across branding, content, and digital
+            experiences — built to stand out and perform.
           </p>
         </div>
       </section>
 
-      {/* Projects Grid */}
+      {/* PROJECTS */}
       <section className="px-6 md:px-12 lg:px-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 lg:gap-24">
-          {projects.map((project, idx) => (
-            <div key={project.id} className="project-card group cursor-pointer" onClick={() => onNavigateToProject?.(project.id)}>
-              <div className="overflow-hidden mb-8">
-                <img
-                  src={project.imageUrl}
-                  alt={project.title}
-                  className="w-full h-80 md:h-96 object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
-                />
-              </div>
+        <div className="flex flex-col gap-32">
+          {PROJECTS.map((project, index) => {
+            const isReversed = index % 2 !== 0;
 
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <span className="w-2 h-2 bg-rebirth-green rounded-full"></span>
-                  <span className="text-[10px] font-mono tracking-widest text-neutral-400 font-bold uppercase">
+            return (
+              <div
+                key={project.id}
+                onClick={() => onNavigateToProject?.(project.id)}
+                className={`project-row grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center cursor-pointer group ${
+                  isReversed ? 'md:flex-row-reverse' : ''
+                }`}
+              >
+                {/* Image */}
+              <div className="overflow-hidden">
+  <img
+    src={project.imageUrl}
+    alt={project.title}
+    className="w-full h-auto max-h-[520px] object-contain transition-transform duration-[900ms] ease-out group-hover:scale-[1.03]"
+  />
+</div>
+
+
+                {/* Content */}
+                <div className="max-w-xl">
+                  <span className="block text-[10px] font-mono uppercase tracking-[0.4em] text-neutral-400 mb-6">
                     {project.category}
                   </span>
-                </div>
 
-                <h3 className="text-3xl md:text-4xl font-bold tracking-tighter italic uppercase group-hover:text-rebirth-green transition-colors">
-                  {project.title}
-                </h3>
+                  <h3 className="text-4xl md:text-5xl font-bold tracking-tighter italic uppercase mb-6 group-hover:text-rebirth-green transition-colors">
+                    {project.title}
+                  </h3>
 
-                <p className="text-neutral-600 leading-relaxed">
-                  {project.description.slice(0, 150)}...
-                </p>
+                  <p className="text-neutral-600 text-lg leading-relaxed mb-10">
+                    {project.description}
+                  </p>
 
-                <div className="flex items-center gap-4 pt-4 border-t border-neutral-100">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.6em] text-neutral-400">View Project</span>
-                  <span className="text-2xl transform group-hover:translate-x-2 transition-transform">→</span>
+                  <div className="flex items-center gap-6">
+                    <span className="text-[11px] font-bold uppercase tracking-[0.5em] text-neutral-400">
+                      View Project
+                    </span>
+                    <span className="text-2xl transform transition-transform group-hover:translate-x-2">
+                      →
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
-    </div>
+    </main>
   );
 };
 
