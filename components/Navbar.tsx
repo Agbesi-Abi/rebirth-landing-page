@@ -1,4 +1,3 @@
-
 import React, { useState, useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { Page } from '../types';
@@ -10,8 +9,11 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(true);
+  const lastScrollY = useRef(0);
   const menuRef = useRef<HTMLDivElement>(null);
   const menuTl = useRef<gsap.core.Timeline | null>(null);
+  const navRef = useRef<HTMLDivElement>(null);
 
   const navItems: { label: string; value: Page }[] = [
     { label: 'Portfolio', value: 'work' },
@@ -19,6 +21,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
     { label: 'Contact', value: 'contact' },
   ];
 
+  // Animate mobile menu
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
       menuTl.current = gsap.timeline({ paused: true })
@@ -36,6 +39,22 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
     }
   }, [isOpen]);
 
+  // Show/hide navbar on scroll
+  useLayoutEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        setShowNavbar(false); // scrolling down → hide
+      } else {
+        setShowNavbar(true); // scrolling up → show
+      }
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const toggleMenu = () => setIsOpen(!isOpen);
 
   const handleNavigate = (page: Page) => {
@@ -45,7 +64,13 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-md px-6 py-4 md:py-6 md:px-12 flex items-center justify-between border-b border-neutral-50 lg:border-none">
+      <div
+        ref={navRef}
+        className={`fixed top-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-md px-6 py-4 md:py-6 md:px-12 flex items-center justify-between border-b border-neutral-50 lg:border-none transition-transform duration-500 ${
+          showNavbar ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
+        {/* Logo */}
         <button 
           onClick={() => handleNavigate('home')}
           className="text-base md:text-lg font-bold tracking-tighter flex items-center gap-2 group"
@@ -54,6 +79,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
           REBIRTH STUDIO
         </button>
         
+        {/* Desktop Menu */}
         <div className="hidden lg:flex items-center space-x-12">
           {navItems.map((item) => (
             <button
@@ -74,6 +100,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
           </button>
         </div>
 
+        {/* Mobile Hamburger */}
         <button 
           onClick={toggleMenu}
           className="lg:hidden flex flex-col gap-1.5 p-2 z-[110]"
@@ -83,8 +110,9 @@ const Navbar: React.FC<NavbarProps> = ({ currentPage, onNavigate }) => {
           <span className={`w-6 h-[1.5px] bg-rebirth-black block transition-opacity duration-500 ${isOpen ? 'opacity-0' : ''}`} />
           <span className={`w-6 h-[1.5px] bg-rebirth-black block origin-center transition-transform duration-500 ${isOpen ? '-rotate-45 -translate-y-[7.5px]' : ''}`} />
         </button>
-      </nav>
+      </div>
 
+      {/* Mobile Menu */}
       <div
         ref={menuRef}
         className="fixed inset-0 z-[90] bg-white flex flex-col px-6 pt-32 pb-12 lg:hidden -translate-y-full"

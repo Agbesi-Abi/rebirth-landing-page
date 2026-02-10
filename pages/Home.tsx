@@ -12,9 +12,9 @@ interface HomeProps {
 
 const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   const horizontalWrapperRef = useRef<HTMLDivElement>(null);
-  const clientSectionRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const manifestoRef = useRef<HTMLElement>(null);
+  const inspirationRef = useRef<HTMLElement>(null);
   const clientDossierRef = useRef<HTMLDivElement>(null);
   const [currentReview, setCurrentReview] = useState(0);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -47,33 +47,63 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Refined Hero Entrance Animation
+      // 1. Hero Entrance: Sequential Scale + Subtle Bounce
       const heroItems = heroRef.current?.querySelectorAll('.hero-item');
       if (heroItems) {
         gsap.fromTo(heroItems, 
           { 
-            y: 80, 
-            opacity: 0, 
             scale: 0.8,
-            rotateX: -15,
+            y: 60, 
+            opacity: 0, 
             filter: "blur(10px)"
           },
-          {
-            y: 0,
-            opacity: 1,
+          { 
             scale: 1,
-            rotateX: 0,
-            filter: "blur(0px)",
-            stagger: 0.25,
-            duration: 1.8,
-            ease: "expo.out",
-            delay: 0.5,
-            transformOrigin: "center top"
+            y: 0, 
+            opacity: 1, 
+            filter: "blur(0px)", 
+            stagger: 0.25, 
+            duration: 1.4, 
+            ease: "back.out(1.2)", 
+            delay: 0.4 
           }
         );
       }
 
-      // 2. Horizontal Scroll for Capabilities
+      // 2. Manifesto "Slide Over" Effect
+      ScrollTrigger.create({
+        trigger: heroRef.current,
+        start: "top top",
+        end: "bottom top",
+        pin: true,
+        pinSpacing: false,
+      });
+
+      gsap.from(".manifesto-content", {
+        scrollTrigger: {
+          trigger: manifestoRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse"
+        },
+        y: 100,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power4.out"
+      });
+
+      // 3. Inspiration Section Entrance
+      gsap.from(".inspiration-text", {
+        scrollTrigger: {
+          trigger: inspirationRef.current,
+          start: "top 80%",
+        },
+        y: 60,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power4.out"
+      });
+
+      // 4. Horizontal Scroll Capabilities
       const sections = gsap.utils.toArray('.capability-card');
       gsap.to(sections, {
         xPercent: -100 * (sections.length - 1),
@@ -83,66 +113,32 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           pin: true,
           scrub: 1,
           snap: 1 / (sections.length - 1),
-          end: () => "+=" + horizontalWrapperRef.current?.offsetWidth,
+          end: () => "+=" + (horizontalWrapperRef.current?.offsetWidth || window.innerWidth),
         }
       });
 
-      // 3. Client Dossier - Sophisticated Staggered Reveal
+      // 5. Client Dossier & Marquee
       const partnerItems = gsap.utils.toArray('.partner-item');
-      partnerItems.forEach((item: any, i) => {
+      partnerItems.forEach((item: any) => {
         const img = item.querySelector('img');
-        
-        // Reveal animation
         gsap.fromTo(item, 
           { clipPath: 'inset(100% 0% 0% 0%)', y: 100, opacity: 0 },
-          { 
-            clipPath: 'inset(0% 0% 0% 0%)', 
-            y: 0, 
-            opacity: 1,
-            duration: 1.5, 
-            ease: "expo.out",
-            scrollTrigger: {
-              trigger: item,
-              start: "top 90%",
-            }
-          }
+          { clipPath: 'inset(0% 0% 0% 0%)', y: 0, opacity: 1, duration: 1.5, ease: "expo.out", scrollTrigger: { trigger: item, start: "top 90%" } }
         );
-
-        // Parallax effect on images
-        gsap.to(img, {
-          yPercent: 15,
-          ease: "none",
-          scrollTrigger: {
-            trigger: item,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true
-          }
-        });
+        gsap.to(img, { yPercent: 15, ease: "none", scrollTrigger: { trigger: item, start: "top bottom", end: "bottom top", scrub: true } });
       });
 
-      // Marquee animation for background
       gsap.to(".client-marquee", {
         xPercent: -50,
         ease: "none",
-        scrollTrigger: {
-          trigger: clientDossierRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1
-        }
+        scrollTrigger: { trigger: clientDossierRef.current, start: "top bottom", end: "bottom top", scrub: 1 }
       });
 
-      // 4. Initial review card stack
       cardRefs.current.forEach((card, i) => {
         if (card) {
-          gsap.set(card, {
-            rotate: i * 2 - (reviews.length / 2),
-            zIndex: reviews.length - i
-          });
+          gsap.set(card, { rotate: i * 2 - (reviews.length / 2), zIndex: reviews.length - i });
         }
       });
-
     }, [horizontalWrapperRef]);
 
     return () => ctx.revert();
@@ -164,12 +160,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
              cardRefs.current.forEach((card, i) => {
                 if (card) {
                   gsap.fromTo(card, { opacity: 0, x: -300 }, {
-                    opacity: 1, 
-                    x: 0, 
-                    y: 0,
-                    rotate: i * 2 - (reviews.length / 2),
-                    duration: 0.6,
-                    delay: i * 0.1,
+                    opacity: 1, x: 0, y: 0, rotate: i * 2 - (reviews.length / 2), duration: 0.6, delay: i * 0.1,
                   });
                 }
              });
@@ -180,90 +171,108 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   };
 
   const capabilities = [
-    {
-      id: "01",
-      title: "Studio.",
-      tag: "PRODUCTION",
-      desc: "High-end content production designed for the digital-first era.",
-      img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130189/_K2A7045_xptwf1.jpg"
-    },
-    {
-      id: "02",
-      title: "Talent.",
-      tag: "MANAGEMENT",
-      desc: "Nurturing the next generation of cultural influencers.",
-      img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130196/_W6A7297_rapyvy.jpg"
-    },
-    {
-      id: "03",
-      title: "Strategy.",
-      tag: "CONSULTANCY",
-      desc: "Data-driven insights meet deep cultural intuition.",
-      img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130190/_K2A7094_mcqvli.jpg"
-    }
+    { id: "01", title: "Studio.", tag: "PRODUCTION", desc: "High-end content production designed for the digital-first era.", img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130189/_K2A7045_xptwf1.jpg" },
+    { id: "02", title: "Talent.", tag: "MANAGEMENT", desc: "Nurturing the next generation of cultural influencers.", img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130196/_W6A7297_rapyvy.jpg" },
+    { id: "03", title: "Strategy.", tag: "CONSULTANCY", desc: "Data-driven insights meet deep cultural intuition.", img: "https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130190/_K2A7094_mcqvli.jpg" }
   ];
 
+
+
   return (
-    <div className="max-w-screen-2xl mx-auto overflow-hidden bg-white">
+    <div className="max-w-screen-2xl mx-auto bg-white">
       {/* Hero Section */}
-      <section ref={heroRef} className="h-screen min-h-[700px] flex flex-col justify-center px-6 md:px-12 lg:px-24 border-b border-neutral-100 overflow-hidden" style={{ perspective: '1000px' }}>
-        <div className="relative z-10 w-full">
-          <h1 className="flex flex-col font-bold italic tracking-tighter text-rebirth-black leading-[0.8] uppercase select-none w-full">
-            <div className="hero-item text-7xl md:text-[11vw] text-left">Digital</div>
-            <div className="hero-item text-7xl md:text-[11vw] text-right flex items-baseline justify-end">
-              <span className="text-rebirth-green">C</span>
-              <span 
-                className="text-transparent bg-clip-text bg-cover bg-center transition-all duration-700 hover:scale-110 cursor-pointer inline-block mx-[-0.02em]"
+      <section ref={heroRef} className="h-screen flex flex-col justify-between px-6 md:px-12 lg:px-24 border-b border-neutral-100 overflow-hidden relative pb-4 md:pb-6 pt-2 md:pt-12 lg:pt-16 bg-white z-0">
+        <div className="relative z-10 w-full flex-grow flex flex-col justify-center">
+          <h1 className="flex flex-col font-bold italic tracking-tighter text-rebirth-black leading-[0.82] uppercase select-none w-full">
+            <div className="hero-item text-[12vw] sm:text-[10vw] md:text-[9.5vw] text-left origin-left">Redefining</div>
+            <div className="hero-item text-[12vw] sm:text-[10vw] md:text-[9.5vw] text-right flex items-baseline justify-end origin-right">
+              <span className="inline-flex items-center justify-center bg-black border border-neutral-100 rounded-xl sm:rounded-2xl md:rounded-[2.5rem] w-12 h-12 sm:w-20 sm:h-20 md:w-36 md:h-36 mx-3 sm:mx-5 md:mx-7 shadow-sm overflow-hidden p-2 sm:p-5 md:p-7 transition-transform hover:scale-110 duration-500">
+                <img src="/images/hero.png" alt="hero-image" className="w-full h-full object-cover" />
+              </span>
+              {/* <span 
+                className="text-transparent bg-clip-text bg-cover bg-center transition-all duration-700 hover:scale-105 cursor-pointer inline-block mx-[-0.01em]"
                 style={{ 
                   backgroundImage: "url('https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1000/v1770130175/1Y3A4626_b0jeme.jpg')",
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent'
                 }}
-              >U</span>
-              <span className="text-rebirth-green">LTURE</span>
+              >D</span> */}
+              <span className="text-rebirth-green">DIGITAL</span>
             </div>
-            <div className="hero-item text-7xl md:text-[11vw] md:pl-[15%] text-left md:text-center lg:text-left">Redefined.</div>
+            <div className="hero-item text-[12vw] sm:text-[10vw] md:text-[9.5vw] md:pl-[10%] text-left origin-left">Creativity</div>
           </h1>
         </div>
         
-        <div className="hero-item mt-16 md:mt-24 grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
-          <div className="md:col-span-4 md:col-start-9 flex flex-col gap-8">
-            {/* <p className="text-sm uppercase tracking-widest font-bold text-neutral-400">
-              Creative Studio  <br /> Accra / Ghana
-            </p> */}
-            <button 
-              onClick={() => onNavigate('expertise')}
-              className="group flex items-center gap-6 text-[10px] font-bold uppercase tracking-[0.4em] border-b-2 border-rebirth-green pb-2 self-start hover:gap-10 transition-all"
-            >
-              Explore Capabilities <span className="group-hover:translate-x-2 transition-transform">→</span>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Manifesto */}
-      <section ref={manifestoRef} className="py-40 md:py-64 px-6 md:px-12 lg:px-24">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
-          <div className="md:col-span-2">
-            <span className="text-[10px] font-bold tracking-[0.6em] text-rebirth-green uppercase italic block pt-4">THE CREDO</span>
-          </div>
-          <div className="md:col-span-10">
-            <p className="text-4xl md:text-7xl font-bold tracking-tighter leading-none italic mb-16 text-balance">
-              We take ordinary ideas, twist them, and turn them into <span className="text-neutral-300">bold stories</span> that reshape culture and spark creativity.
+        <div className="hero-item mt-12 md:mt-0 grid grid-cols-1 md:grid-cols-12 gap-8 items-end w-full">
+          <div className="md:col-span-5 md:col-start-8 lg:col-span-4 lg:col-start-9 flex flex-col gap-8 md:gap-6">
+            <p className="text-[14px] sm:text-[15px] font-medium leading-relaxed text-neutral-500 text-left md:text-justify border-l-2 md:border-l-0 border-rebirth-green/20 pl-4 md:pl-0">
+              We transform ideas into bold stories, campaigns, and visuals that connect with youth and culture.
             </p>
-            <div className="h-[1px] w-full bg-neutral-100"></div>
+            <div className="flex items-center justify-between md:justify-start gap-6">
+              <button 
+                onClick={() => onNavigate('expertise')}
+                className="group flex items-center gap-4 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.4em] border-b-2 border-rebirth-green pb-2 hover:gap-8 transition-all"
+              >
+                Expertise <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </button>
+              <div className="block md:hidden h-[1px] flex-grow bg-neutral-100 ml-4"></div>
+            </div>
           </div>
         </div>
+        
+        {/* Subtle detail for mobile */}
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 opacity-[0.03] text-[40vw] font-black italic select-none pointer-events-none z-0 hidden sm:block md:hidden">
+          RBX
+        </div>
       </section>
+      
+
+{/* ================= MANIFESTO ================= */}
+<section
+  ref={manifestoRef}
+  className="relative z-10 py-24 md:py-36 px-6 md:px-12 lg:px-24 bg-white"
+>
+  <div className="manifesto-card bg-rebirth-green rounded-tr-[4rem] overflow-hidden shadow-lg lg:flex lg:items-center lg:gap-10 p-6 md:p-12 max-w-7xl mx-auto">
+    
+    {/* TEXT LEFT */}
+    <div className="lg:w-7/12 text-white flex flex-col justify-center">
+      <p className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight italic mb-6">
+        We take ordinary ideas, twist them, and turn them into{" "}
+        <span className="text-white/90 font-extrabold">bold stories</span> that reshape culture and spark creativity.
+      </p>
+      <button
+        onClick={() => onNavigate('expertise')}
+        className="text-[10px] md:text-sm font-bold tracking-[0.4em] uppercase border-b-2 border-white pb-1 hover:text-white/90 transition-colors mt-3"
+      >
+        Our Philosophy →
+      </button>
+    </div>
+
+    {/* IMAGE RIGHT */}
+    <div className="lg:w-5/12 relative group mt-6 lg:mt-0">
+      <img
+        src="https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206160/_W6A6885_nghepk.jpg"
+        alt="Manifesto Visual"
+        className="w-full h-auto object-cover aspect-[4/5] rounded-lg grayscale transition-all duration-[1.5s] group-hover:grayscale-0 group-hover:scale-105"
+      />
+      <div className="absolute inset-0 border border-white/20 pointer-events-none rounded-lg"></div>
+      <div className="absolute bottom-4 right-4 text-white text-[8px] md:text-[10px] font-mono tracking-widest bg-black/50 px-3 py-1 opacity-0 group-hover:opacity-100 transition-opacity rounded-sm">
+        FRAGMENT_MANIFEST_01
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+
 
       {/* Horizontal Capabilities */}
-      <section ref={horizontalWrapperRef} className="bg-rebirth-black overflow-hidden">
+      <section ref={horizontalWrapperRef} className="bg-rebirth-black overflow-hidden relative z-20 h-screen">
         <div className="flex h-screen w-[300vw] items-center">
           {capabilities.map((item, index) => (
-            <div 
-              key={index} 
-              className="capability-card relative h-screen w-screen flex-shrink-0 flex items-center p-6 md:p-24"
-            >
+            <div key={index} className="capability-card relative h-screen w-screen flex-shrink-0 flex items-center p-6 md:p-24">
               <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center w-full max-w-screen-2xl mx-auto">
                 <div className="md:col-span-5 relative z-10">
                   <span className="text-[10px] font-mono font-bold tracking-widest text-rebirth-green mb-12 block">[{item.id} // {item.tag}]</span>
@@ -283,9 +292,8 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* Meet Some Of Our Clients - Enhanced Dossier */}
-      <section ref={clientDossierRef} className="py-40 md:py-64 px-6 md:px-12 lg:px-24 bg-white relative overflow-hidden">
-        {/* Background Marquee for texture */}
+      {/* Meet Some Of Our Clients */}
+      <section ref={clientDossierRef} className="py-32 md:py-48 px-6 md:px-12 lg:px-24 bg-white relative overflow-hidden z-20">
         <div className="absolute top-1/2 left-0 w-full whitespace-nowrap opacity-[0.03] pointer-events-none select-none z-0">
           <div className="client-marquee text-[15vw] font-black uppercase tracking-tighter inline-block">
             TECH INNOVATORS BLOOM LUXURY URBAN PULSE ETHEREAL GOODS FUTURE FORM &nbsp;
@@ -310,26 +318,11 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
         <div className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-x-8 md:gap-y-16 auto-rows-min">
           {partners.map((partner, index) => (
-            <div 
-              key={index} 
-              className={`partner-item group relative overflow-hidden bg-neutral-50 border border-neutral-100 ${partner.span} ${partner.offset}`}
-            >
-              {/* Card Metadata */}
-              <div className="absolute top-0 left-0 right-0 p-4 z-20 flex justify-between items-start pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                <span className="text-[8px] font-mono text-white/40 tracking-widest">DOSSIER_v2.0</span>
-                <span className="text-[8px] font-mono text-rebirth-green tracking-widest animate-pulse">LIVE</span>
-              </div>
-
+            <div key={index} className={`partner-item group relative overflow-hidden bg-neutral-50 border border-neutral-100 ${partner.span} ${partner.offset}`}>
               <div className="w-full h-full overflow-hidden">
-                <img 
-                  src={partner.img} 
-                  alt={partner.name}
-                  className="w-full h-full object-cover grayscale brightness-90 transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-110"
-                />
+                <img src={partner.img} alt={partner.name} className="w-full h-full object-cover grayscale brightness-90 transition-all duration-1000 group-hover:grayscale-0 group-hover:scale-110" />
               </div>
-
               <div className="absolute inset-0 bg-gradient-to-t from-rebirth-black/90 via-rebirth-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
               <div className="absolute bottom-4 left-4 md:bottom-8 md:left-8 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-8 group-hover:translate-y-0">
                 <div className="flex items-center gap-3 mb-3">
                   <span className="w-8 h-[1px] bg-rebirth-green"></span>
@@ -344,42 +337,65 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-12 min-h-screen bg-white flex flex-col items-center justify-center px-6">
-        <div className="mb-24 text-center">
-          {/* <span className="text-[10px] uppercase tracking-ultra-widest font-bold text-rebirth-green mb-8 block">VOICES</span> */}
-          <h2 className="text-3xl md:text-6xl font-bold tracking-tighter italic leading-none">The <span className="text-rebirth-green">Response.</span></h2>
-        </div>
-        
-        <div className="relative w-[300px] h-[400px] md:w-[400px] md:h-[500px] mb-20" style={{ perspective: '1500px' }}>
-          {reviews.map((review, idx) => (
-            <div 
-              key={idx} 
-              ref={el => { cardRefs.current[idx] = el; }}
-              className="absolute inset-0 bg-rebirth-black p-10 md:p-16 flex flex-col justify-between border border-neutral-900 shadow-2xl"
-            >
-              <div className="text-[10px] font-mono text-rebirth-green mb-8">RB / 0{idx + 1}</div>
-              <p className="text-2xl md:text-3xl font-serif italic text-white leading-tight">"{review.quote}"</p>
-              <div className="flex flex-col gap-2 pt-12 border-t border-white/10">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white">{review.author}</span>
-                <span className="text-[8px] uppercase tracking-widest text-neutral-500">{review.role}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+<section className="py-32 bg-white px-6 z-20 relative">
+  <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+    
+    {/* Header - Left Column */}
+    <div className="text-left">
+      <span className="text-[10px] uppercase tracking-ultra-widest font-bold text-rebirth-green mb-8 block">VOICES</span>
+      <h2 className="text-5xl md:text-8xl font-bold tracking-tighter italic leading-none">
+        The <span className="text-rebirth-green">Response.</span>
+      </h2>
+      <p className="mt-8 text-neutral-600 max-w-md">
+        Hear what industry leaders and clients have to say about their experience.
+      </p>
+    </div>
+    
+    {/* Cards & Controls - Right Column */}
+    <div className="flex flex-col items-center lg:items-end">
+      
+      {/* Card Container */}
+      <div className="relative w-[300px] h-[400px] md:w-[400px] md:h-[500px] mb-12" style={{ perspective: '1500px' }}>
+        {reviews.map((review, idx) => (
+          <div 
+            key={idx} 
+            ref={el => { cardRefs.current[idx] = el; }} 
+            className="absolute inset-0 bg-rebirth-black p-10 md:p-16 flex flex-col justify-between border border-neutral-900 shadow-2xl"
+          >
+            <div className="text-[10px] font-mono text-rebirth-green mb-8">RB / 0{idx + 1}</div>
+            <p className="text-2xl md:text-3xl font-serif italic text-white leading-tight">
+              "{review.quote}"
+            </p>
+            <div className="flex flex-col gap-2 pt-12 border-t border-white/10">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-white">
+                {review.author}
+              </span>
+              <span className="text-[8px] uppercase tracking-widest text-neutral-500">
+                {review.role}
+              </span>
 
-        <button 
-          onClick={handleNextReview}
-          className="w-20 h-12 border border-neutral-200 flex items-center justify-center hover:bg-rebirth-green hover:border-rebirth-green hover:text-white transition-all group"
-        >
-          <span className="text-2xl group-hover:translate-x-1 transition-transform">→</span>
-        </button>
-      </section>
+            </div>
+             {/* Navigation Button */}
+      <button 
+        onClick={handleNextReview} 
+        className=" w-12 h-12 border bg-white justify-end border-neutral-200 flex items-center justify-center hover:bg-rebirth-green hover:border-rebirth-green hover:text-white transition-all group"
+      >
+        <span className="text-2xl group-hover:translate-x-1 transition-transform">→</span>
+      </button>
+          </div>
+        ))}
+      </div>
+
+     
+    </div>
+  </div>
+</section>
 
       {/* Footer CTA */}
-      <section className="py-64 flex flex-col items-center text-center border-t border-neutral-100">
+      <section className="py-48 flex flex-col items-center text-center border-t border-neutral-100 z-20 relative">
         <h2 className="text-6xl md:text-[12vw] font-bold tracking-tighter italic leading-none mb-24">Start <span className="text-rebirth-green">Today.</span></h2>
         <button onClick={() => onNavigate('contact')} className="px-20 py-10 bg-rebirth-black text-white text-[12px] uppercase tracking-[0.5em] font-bold hover:bg-rebirth-green transition-colors">
-          Join The Family
+          Initiate Proposal
         </button>
       </section>
     </div>

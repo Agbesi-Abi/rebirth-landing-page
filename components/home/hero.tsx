@@ -88,7 +88,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate }) => {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-[calc(100vh-80px)] flex flex-col justify-between px-4 sm:px-6 md:px-12 lg:px-20 pt-8 md:pt-16 pb-12 md:pb-20 bg-white overflow-hidden"
+      className="relative min-h-[calc(100vh-80px)] flex flex-col justify-between px-4 sm:px-6 md:px-12 lg:px-20 xl:px-24 2xl:px-32 pt-8 md:pt-16 xl:pt-20 2xl:pt-24 pb-12 md:pb-20 xl:pb-24 2xl:pb-28 bg-white overflow-hidden"
     >
       {/* Gradient overlay */}
       <div
@@ -110,32 +110,32 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate }) => {
               Digital
             </span>
 
-            <span className="hero-line image-letter flex-grow text-[clamp(4.5rem,12vw,13rem)] leading-[0.85] md:pl-[5%] lg:pl-[8%] font-black bg-clip-text text-transparent relative">
+            <span className="hero-line image-letter flex-grow text-[clamp(4.5rem,12vw,13rem)] leading-[0.85] md:pl-[5%] lg:pl-[8%] xl:pl-[10%] font-black bg-clip-text text-transparent relative">
               Culture
             </span>
 
-            <span className="hero-line text-[clamp(4rem,10vw,12rem)] leading-[0.85] md:pl-[15%] lg:pl-[20%] mt-auto">
+            <span className="hero-line text-[clamp(4rem,10vw,12rem)] leading-[0.85] md:pl-[15%] lg:pl-[20%] xl:pl-[25%] mt-auto">
               Redefined
             </span>
           </div>
         </div>
 
         {/* Side Meta */}
-        <div className="md:flex-0 md:w-[280px] mt-8 md:mt-0 md:ml-8 self-start md:self-end">
+        <div className="md:flex-0 md:w-[280px] lg:w-[320px] xl:w-[360px] 2xl:w-[400px] mt-8 md:mt-0 md:ml-8 self-start md:self-end">
           <div className="side-meta space-y-6">
-            <p className="text-sm md:text-base font-medium italic leading-tight text-rebirth-black/80">
+            <p className="text-sm md:text-base lg:text-lg xl:text-xl font-medium italic leading-tight text-rebirth-black/80">
               We're a creative studio and culture agency that crafts bold work for brands who{" "}
               <span className="text-rebirth-green font-bold">refuse to blend in.</span>
             </p>
             <button
               onClick={() => onNavigate("contact")}
-              className="relative inline-flex items-center gap-4 overflow-hidden group px-4 py-2"
+              className="relative inline-flex items-center gap-4 overflow-hidden group px-4 py-2 xl:px-6 xl:py-3"
             >
               <span className="relative z-10 text-xs font-bold uppercase tracking-widest border-b-2 border-rebirth-black pb-1 group-hover:text-rebirth-green group-hover:border-rebirth-green transition-all italic">
                 Start project
               </span>
               <span className="absolute inset-0 bg-rebirth-green opacity-0 group-hover:opacity-20 transition-all rounded"></span>
-              <span className="w-8 h-8 rounded-full bg-rebirth-black text-white flex items-center justify-center text-xs group-hover:bg-rebirth-green transition-colors relative z-10">
+              <span className="w-8 h-8 xl:w-10 xl:h-10 rounded-full bg-rebirth-black text-white flex items-center justify-center text-xs group-hover:bg-rebirth-green transition-colors relative z-10">
                 →
               </span>
             </button>
