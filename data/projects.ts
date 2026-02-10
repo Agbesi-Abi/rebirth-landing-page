@@ -27,7 +27,7 @@ export const PROJECTS: ProjectDetails[] = [
   //     },
   //     {
   //       url: 'https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206155/1Y3A6629_ozf2mz.jpg',
-  //       label: 'ARCHIVE_03', meta: 'STREET_ACTIVATION', colSpan: 'col-span-12 md:col-span-7', aspect: 'aspect-[4/3] md:mt-32', parallax: -0.08
+  //       label: 'ARCHIVE_03', meta: 'KALYS_HOUSE', colSpan: 'col-span-12 md:col-span-7', aspect: 'aspect-[4/3] md:mt-32', parallax: -0.08
   //     }
   //   ]
   // },
@@ -48,7 +48,7 @@ export const PROJECTS: ProjectDetails[] = [
     description: "An immersive 24-hour documentary series capturing the authentic life of digital influencer Kalyjay. We crafted a narrative that showcased the raw energy of contemporary African youth culture, blending street photography with intimate storytelling.",
     fragments: [
       {
-        url: 'https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,dpr_auto,w_1200/v1770130189/_K2A6899_xtowwf.jpg',
+        url: 'https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130177/1Y3A5832_fevflj.jpg',
         label: 'ARCHIVE_01', meta: 'PRIMARY_BANNER', colSpan: 'col-span-12', aspect: 'aspect-[21/9] md:aspect-video', parallax: 0.05
       },
       {
@@ -57,20 +57,26 @@ export const PROJECTS: ProjectDetails[] = [
       },
       {
         url: 'https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206155/1Y3A4697_x5zbwu.jpg',
-        label: 'ARCHIVE_03', meta: 'STREET_ACTIVATION', colSpan: 'col-span-12 md:col-span-7', aspect: 'aspect-[4/3] md:mt-32', parallax: -0.08
+        label: 'ARCHIVE_03', meta: 'KALYS_HOUSE', colSpan: 'col-span-12 md:col-span-7', aspect: 'aspect-[4/3] md:mt-32', parallax: -0.08
       },
       {
         url: 'https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206176/1Y3A6944_e6qsrj.jpg',
-        label: 'ARCHIVE_04', meta: 'STREET_ACTIVATION', colSpan: 'col-span-12 md:col-span-7', aspect: 'aspect-[4/3] md:mt-32', parallax: -0.08 
+        label: 'ARCHIVE_04', meta: 'KALYS_HOUSE', colSpan: 'col-span-12 md:col-span-7', aspect: 'aspect-[4/3] md:mt-32', parallax: -0.08 
       },
       {
-        url: 'https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206157/_K2A6888_p8zcd7.jpg',
-        label: 'ARCHIVE_05', meta: 'STREET_ACTIVATION', colSpan: 'col-span-12 md:col-span-7', aspect: 'aspect-[4/3] md:mt-32', parallax: -0.08 
+        url: 'https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,dpr_auto,w_1200/v1770206160/_W6A6885_nghepk.jpg',
+        label: 'ARCHIVE_05', meta: 'KALYS_HOUSE', colSpan: 'col-span-12 md:col-span-7', aspect: 'aspect-[4/3] md:mt-32', parallax: -0.08 
       },
       {
-        url: 'https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770206155/_K2A6866_nowpow.jpg',
-        label: 'ARCHIVE_06', meta: 'STREET_ACTIVATION', colSpan: 'col-span-12 md:col-span-7', aspect: 'aspect-[4/3] md:mt-32', parallax: -0.08 
-      }  
+        url: 'https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1200/v1770130196/_W6A7297_rapyvy.jpg',
+        label: 'ARCHIVE_06', meta: 'KALYS_HOUSE', colSpan: 'col-span-12 md:col-span-7', aspect: 'aspect-[4/3] md:mt-32', parallax: -0.08 
+      }  ,
+        {
+        url: 'https://res.cloudinary.com/dnz71cs9x/image/upload/f_auto,q_auto,w_1000/v1770130175/1Y3A4626_b0jeme.jpg',
+        label: 'ARCHIVE_07', meta: 'KALYS_HOUSE', colSpan: 'col-span-12 md:col-span-7', aspect: 'aspect-[4/3] md:mt-32', parallax: -0.08 
+      },
+
+
     ]
   }
 ];
