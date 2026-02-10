@@ -120,7 +120,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ onNavigate, projectId, on
                 <img 
                   src={frag.url} 
                   alt={frag.label} 
-                  className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-[2.5s] scale-110" 
+                  className="w-full h-full object-cover  brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-[2.5s] scale-110" 
                 />
                 <div className="absolute inset-0 bg-rebirth-green/5 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </div>
